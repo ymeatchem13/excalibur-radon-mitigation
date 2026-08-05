@@ -61,23 +61,34 @@ export const SITE_ID = `${SITE_URL}/#website`;
 const orgRef = { "@id": ORG_ID };
 
 /**
- * Carries the telephone. Deliberately carries NO address or geo.
+ * A HomeAndConstructionBusiness, not a bare Organization: there is now a real,
+ * occupied address, which is exactly what a LocalBusiness subtype presupposes.
+ * HomeAndConstructionBusiness is the closest honest fit - its siblings are
+ * Plumber, HVACBusiness and RoofingContractor, none of which describe radon
+ * work. Do not narrow further.
  *
- * The phone is real, so it is asserted here. There is no address to assert:
- * `business` has none, because this is a service-area business that works at the
- * customer's property. Asserting unverifiable NAP in machine-readable form is
- * worse than omitting it - it would conflict with any future Google Business
- * Profile. For the same reason the type stays Organization rather than a
- * LocalBusiness subtype, since those presuppose a verifiable address. When a
- * real, occupied address arrives, change the type here and add the fields;
- * together with `business` in site-data.ts that is the whole change.
+ * CAVEAT, read before editing: the address is asserted here and rendered
+ * NOWHERE on the site. Google's structured-data guidelines ask that marked-up
+ * content be visible to readers, so this is a deliberate, accepted deviation.
+ * It was taken because the visible copy's "we come to you, no walk-in office"
+ * framing is the accurate description of a service-area business, and because
+ * the address matches the Google Business Profile for NAP consistency. If that
+ * trade stops being acceptable, the fix is a visible address line - not a
+ * removal here.
  *
- * Also absent on purpose: `sameAs` (no real profiles exist yet - this is the
- * highest-value field to add once there are any), and aggregateRating/review
- * (there is no review data anywhere on the site).
+ * `email` is a conditional spread because business.email is null until a real
+ * inbox is confirmed; a placeholder must never reach the graph. `openingHours`
+ * and `priceRange` are absent for the same reason - the hours are unconfirmed
+ * and there is no price list. Both are Google-recommended rather than required,
+ * so their absence is a warning in the Rich Results Test, never an error.
+ * priceRange in particular must stay out: the FAQ is explicit that the ranges
+ * it quotes are the EPA's and other companies', not ours.
+ *
+ * Still absent on purpose: aggregateRating/review. There is no review data
+ * anywhere on this site, and inventing it is a manual-action risk.
  */
 export const organizationNode = {
-  "@type": "Organization",
+  "@type": "HomeAndConstructionBusiness",
   "@id": ORG_ID,
   name: business.name,
   url: SITE_URL,
@@ -88,13 +99,23 @@ export const organizationNode = {
     height: 512,
   },
   image: `${SITE_URL}/og-image.png`,
-  email: business.email,
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: business.address.streetAddress,
+    addressLocality: business.address.addressLocality,
+    addressRegion: business.address.addressRegion,
+    postalCode: business.address.postalCode,
+    addressCountry: business.address.addressCountry,
+  },
+  hasMap: business.mapUrl,
+  sameAs: business.sameAs,
+  ...(business.email ? { email: business.email } : {}),
   // Derived, not restated: a literal here would be a third copy of the number
   // and could silently drift from the tel: link. Yields E.164, which is what
   // Google expects for `telephone`.
   telephone: business.phoneHref.replace(/^tel:/, ""),
   description:
-    "Radon testing and EPA-compliant radon mitigation systems for homes and commercial buildings throughout Greater Cincinnati and Northern Kentucky.",
+    "Radon testing and radon mitigation systems for homes and commercial buildings throughout Greater Cincinnati and Northern Kentucky, installed to current EPA guidance.",
   knowsAbout: [
     "Radon testing",
     "Radon mitigation",

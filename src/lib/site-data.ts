@@ -5,31 +5,71 @@ import { ROUTES } from "./routes";
 // Open Graph, canonical links, JSON-LD, and the sitemap all require. Relative
 // URLs are silently ignored by social scrapers and rejected by Google's sitemap
 // parser. Must match the host actually served (non-www here).
-export const SITE_URL = "https://cincinnatiradonsolutions.com";
+export const SITE_URL = "https://excaliburradonmitigation.netlify.app";
 
-export const business = {
-  name: "Cincinnati Radon Solutions",
-  shortName: "Cincinnati Radon Solutions",
+type Business = {
+  name: string;
+  shortName: string;
+  phoneDisplay: string;
+  phoneHref: string;
+  /* null, never a placeholder string like "[EXCALIBUR EMAIL ADDRESS]".
+
+     A bracketed token is a string: it type-checks, it renders, and it
+     interpolates into `mailto:` and into JSON-LD without complaint, so it
+     ships. null is the only representation the compiler can enforce - every
+     consumer is forced to branch, and `tsc` enumerates them for you.
+
+     Fill this in and every call site below lights up with no other edit. */
+  email: string | null;
+  /* null for the same reason as `email`. The Google Business Profile publishes
+     only Tuesday 8 AM-5 PM, which is not a week; asserting the rest would be
+     inventing it. See MIGRATION-NOTES.md. */
+  hours: string | null;
+  /* Asserted in STRUCTURED DATA ONLY - see organizationNode in seo.ts. Nothing
+     rendered prints these fields. */
+  address: {
+    streetAddress: string;
+    addressLocality: string;
+    addressRegion: string;
+    postalCode: string;
+    addressCountry: string;
+  };
+  /* Confirmed profiles for schema `sameAs`. Only add URLs that resolve. */
+  sameAs: string[];
+  mapUrl: string;
+};
+
+export const business: Business = {
+  name: "Excalibur Radon Mitigation",
+  shortName: "Excalibur Radon",
   /* These two must stay in sync; nothing enforces it. phoneHref is E.164 with
      no spaces, parentheses or hyphens, because mobile dialers mishandle a
      formatted tel: value. seo.ts derives the schema `telephone` from phoneHref
      rather than restating the digits, so there is no third copy to drift. */
-  phoneDisplay: "(513) 854-6650",
-  phoneHref: "tel:+15138546650",
-  email: "service@cincinnatiradonsolutions.com",
-  /* There is deliberately NO address or geo here, and adding placeholder values
-     back is worse than leaving them out.
+  phoneDisplay: "(513) 859-7678",
+  phoneHref: "tel:+15138597678",
+  email: null,
+  hours: null,
+  /* Real and occupied, and asserted in structured data only. No rendered page
+     prints it, and the visible copy keeps the "we come to you, there is no
+     walk-in office" framing, which is the accurate description of a
+     service-area business that works at the customer's property.
 
-     A fabricated street address misleads visitors, and it actively harms the
-     thing it looks like it helps: a Google Business Profile verified against an
-     address the business does not occupy gets suspended, not ranked. The site
-     is a service-area business - work happens at the customer's property - so
-     "no public address" is the accurate description, not a gap.
-
-     When a real, occupied address exists, add it here and change the schema type
-     in seo.ts from Organization to a LocalBusiness subtype. That comment marks
-     itself as the only other place that needs to change. */
-  hours: "Mon to Sat, 7:00 AM to 7:00 PM",
+     Read the caveat on organizationNode in seo.ts before putting this on a
+     page: Google asks that marked-up content be visible to readers, and this
+     deliberately is not. That is a considered trade, not an oversight. */
+  address: {
+    streetAddress: "5644 Windridge Drive",
+    addressLocality: "Cincinnati",
+    addressRegion: "OH",
+    postalCode: "45248",
+    addressCountry: "US",
+  },
+  sameAs: [
+    "https://www.facebook.com/people/Excalibur-Radon-Mitigation/61590681853378/",
+    "https://www.google.com/maps?cid=7683202303292945824",
+  ],
+  mapUrl: "https://www.google.com/maps?cid=7683202303292945824",
 };
 
 /* `to` is AppPath, not string: a typo or a retired path is now a build error
@@ -189,28 +229,28 @@ export const steps = [
 
 export const whyUs = [
   {
-    title: "Locally Owned",
-    body: "We live here. Our crews know Cincinnati's limestone shale geology and the housing stock from Hyde Park to Hebron.",
+    title: "Local Geology",
+    body: "This region's limestone shale and older block foundations drive how systems get designed, from Hyde Park to Hebron.",
   },
   {
     title: "EPA Best Practices",
     body: "Testing and installation follow current EPA guidance and national radon mitigation standards.",
   },
   {
-    title: "Experienced Technicians",
-    body: "Systems are installed by trained mitigation technicians, never subcontracted out to whoever is available.",
+    title: "Diagnostics First",
+    body: "Sub-slab communication gets measured before suction points are chosen, because placement decides the result.",
   },
   {
-    title: "Transparent Pricing",
-    body: "One written quote before work starts. No day-of add-ons, no pressure, no vague allowances.",
+    title: "Written Quotes",
+    body: "Pricing comes in writing after an on-site visit. No day-of add-ons, no pressure, no vague allowances.",
   },
   {
-    title: "Fast Scheduling",
-    body: "Real estate deadlines don't wait. We hold capacity each week for time-sensitive transactions.",
+    title: "Real Estate Timing",
+    body: "Inspection windows are short. A monitor test needs 48 hours, so radon belongs early in the period.",
   },
   {
-    title: "Workmanship Warranty",
-    body: "Our installations carry a long-term workmanship warranty; specific terms are provided with your written estimate.",
+    title: "System Documentation",
+    body: "You get the post-mitigation test result and the system details in writing, for your records or a closing file.",
   },
   {
     title: "Clean Installations",
@@ -434,10 +474,13 @@ export const stats = [
   { value: "4.0 pCi/L", label: "EPA Action Level", sub: "The EPA recommends fixing homes at or above this reading" },
   { value: "1 in 15", label: "U.S. Homes Affected", sub: "EPA estimate of homes with elevated indoor radon" },
   { value: "ANSI/AARST", label: "Installation Standard", sub: "The national consensus standard we build systems to" },
-  { value: "1 Day", label: "Typical Installation", sub: "Most residential systems finish in a single visit" },
+  { value: "4-8 hrs", label: "Typical Install Time", sub: "Most residential systems finish in a single visit" },
 ];
 
-export const trustBadges = ["Licensed", "Insured", "Locally Owned", "Free Estimates"];
+/* Every badge here has to be defensible from something else on this site. No
+   licence, insurance, or ownership claims: none of them are verified, and a
+   trust badge is exactly where an unverified claim does the most damage. */
+export const trustBadges = ["Radon Only", "EPA Protocols", "AARST Standard", "Free Estimates"];
 
 export type BlogPost = {
   slug: string;

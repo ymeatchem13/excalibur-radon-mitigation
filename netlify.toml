@@ -14,7 +14,7 @@
 [build]
   # `npm ci` is explicit rather than left to Netlify's auto-detection: bun.lock is
   # committed, so Netlify would otherwise install with Bun. This requires
-  # package-lock.json to be committed too - it is not, as of writing.
+  # package-lock.json to be committed too - it is.
   command = "npm ci && npm run build"
   publish = "dist"
 

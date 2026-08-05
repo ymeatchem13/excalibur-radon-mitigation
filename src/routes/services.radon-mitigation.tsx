@@ -108,12 +108,12 @@ function Page() {
         "Sump pit sealing and slab crack sealing",
         "Labeled system with manometer",
         "Post-installation verification test",
-        "Written workmanship warranty",
+        "Written scope and pricing up front",
         "Typically completed in one day",
-        "Priority scheduling for active contracts",
+        "Scheduling around real estate deadlines",
         "New construction rough-in and activation",
         "Engineered multi-point commercial systems",
-        "Documentation for closing and warranty files",
+        "Documentation for closing and inspection files",
       ]}
     />
   );

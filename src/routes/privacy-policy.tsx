@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/site/PageHero";
+import { WrittenContact } from "@/components/site/WrittenContact";
 import { business } from "@/lib/site-data";
 import { canonical, ldScript, pageGraph, pageMeta } from "@/lib/seo";
 
-const title = "Privacy Policy | Cincinnati Radon Solutions";
+const title = "Privacy Policy | Excalibur Radon Mitigation";
 const description =
-  "How Cincinnati Radon Solutions collects, uses, and protects information submitted through our website and estimate request forms.";
+  "How Excalibur Radon Mitigation collects, uses, and protects information submitted through our website and estimate request forms.";
 
 export const Route = createFileRoute("/privacy-policy")({
   head: () => ({
@@ -58,7 +59,7 @@ function Page() {
       <PageHero
         eyebrow="Privacy"
         title="Privacy Policy"
-        subtitle="This policy is maintained by Cincinnati Radon Solutions and describes how we handle information submitted through this website."
+        subtitle="This policy is maintained by Excalibur Radon Mitigation and describes how we handle information submitted through this website."
         crumbs={[{ name: "Privacy Policy", path: "/privacy-policy" }]}
       />
       <section className="section-y">
@@ -70,11 +71,8 @@ function Page() {
             </div>
           ))}
           <p className="text-sm text-muted-foreground">
-            Questions about this policy? Email{" "}
-            <a href={`mailto:${business.email}`} className="font-bold text-brand hover:underline">
-              {business.email}
-            </a>{" "}
-            or call {business.phoneDisplay}.
+            Questions about this policy? Call {business.phoneDisplay} or{" "}
+            <WrittenContact linkClassName="font-bold text-brand hover:underline" />.
           </p>
         </div>
       </section>

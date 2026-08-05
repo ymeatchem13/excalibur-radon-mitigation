@@ -21,14 +21,26 @@ const serviceOptions = [
   "Something Else",
 ];
 
+/* Netlify's form handler lives at this static file, not at a route. See the
+   comment in public/__forms.html for why an SSR app needs it. */
+const FORM_ENDPOINT = "/__forms.html";
+const FORM_NAME = "quote";
+
 export function QuoteForm({ compact = false }: { compact?: boolean }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = Object.fromEntries(new FormData(e.currentTarget));
-    const result = schema.safeParse(data);
+    /* Captured before any await: React nulls currentTarget once the synthetic
+       event dispatch returns, so reading it after the fetch is a null deref.
+       This handler used to be synchronous; it is not anymore. */
+    const formData = new FormData(e.currentTarget);
+
+    /* form-name and bot-field ride along here, but z.object strips unknown
+       keys rather than erroring, so the schema needs no entry for them. */
+    const result = schema.safeParse(Object.fromEntries(formData));
     if (!result.success) {
       const next: Record<string, string> = {};
       for (const issue of result.error.issues) next[String(issue.path[0])] = issue.message;
@@ -36,7 +48,31 @@ export function QuoteForm({ compact = false }: { compact?: boolean }) {
       return;
     }
     setErrors({});
-    setSent(true);
+    setSubmitting(true);
+
+    /* Built by hand rather than `new URLSearchParams(formData)`: that works at
+       runtime, but lib.dom does not type FormData as a valid constructor
+       argument under `strict`. This also drops the File branch we never use. */
+    const params = new URLSearchParams();
+    formData.forEach((value, key) => {
+      if (typeof value === "string") params.append(key, value);
+    });
+
+    try {
+      const res = await fetch(FORM_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: params.toString(),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      setSent(true);
+    } catch {
+      setErrors({
+        form: `That didn't send. Please call ${business.phoneDisplay} or try again.`,
+      });
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   if (sent) {
@@ -58,10 +94,25 @@ export function QuoteForm({ compact = false }: { compact?: boolean }) {
 
   return (
     <form
+      name={FORM_NAME}
+      method="POST"
+      action={FORM_ENDPOINT}
+      data-netlify="true"
+      netlify-honeypot="bot-field"
       onSubmit={onSubmit}
       noValidate
       className="rounded-3xl border border-border bg-card p-6 shadow-soft md:p-8"
     >
+      <input type="hidden" name="form-name" value={FORM_NAME} />
+      {/* Honeypot. `hidden` is display:none, which is what Netlify's own example
+          uses. FormData still serializes display:none inputs - only `disabled`
+          ones are skipped - so the field reaches Netlify and a bot that fills it
+          gets dropped. No layout impact. */}
+      <p className="hidden">
+        <label>
+          Do not fill this out: <input name="bot-field" />
+        </label>
+      </p>
       <div className={compact ? "grid gap-4" : "grid gap-4 sm:grid-cols-2"}>
         <div>
           <label className={labelCls} htmlFor="qf-name">
@@ -134,12 +185,21 @@ export function QuoteForm({ compact = false }: { compact?: boolean }) {
 
       <button
         type="submit"
+        disabled={submitting}
         className="mt-6 w-full rounded-xl bg-brand px-6 py-3.5 text-sm font-bold text-brand-foreground shadow-brand transition-transform hover:-translate-y-0.5"
       >
         Request My Free Estimate
       </button>
-      <p className="mt-3 text-center text-xs text-muted-foreground">
-        We reply within one business day. Your information is never sold or shared.
+      {/* Same element, position and size in both states - only the colour and
+          the text change, and only when a send actually fails. */}
+      <p
+        className={
+          errors["form"]
+            ? "mt-3 text-center text-xs text-destructive"
+            : "mt-3 text-center text-xs text-muted-foreground"
+        }
+      >
+        {errors["form"] ?? "We reply within one business day. Your information is never sold or shared."}
       </p>
     </form>
   );

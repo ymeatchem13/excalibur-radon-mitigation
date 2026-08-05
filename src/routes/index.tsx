@@ -18,9 +18,9 @@ import { ROUTES } from "@/lib/routes";
 // substrings: "Cincinnati Radon Mitigation" (90/mo) and "Radon Mitigation
 // Systems" (480/mo, LOW competition). Do not insert a comma or "in" between the
 // city and the service words; that splits the first phrase and loses it.
-const title = "Cincinnati Radon Mitigation Systems | Free Quote";
+const title = "Excalibur Radon Mitigation | Cincinnati, OH";
 const description =
-  "Licensed radon mitigation systems and EPA-protocol radon testing across Greater Cincinnati and Northern Kentucky. Free written quote, most installs in one day.";
+  "Protect your Cincinnati-area home from elevated radon levels with professional radon mitigation solutions from Excalibur Radon Mitigation. Request an estimate today.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -79,7 +79,7 @@ function Index() {
               transition={{ duration: 0.6, delay: 0.05 }}
               className="mt-6 max-w-3xl text-4xl font-extrabold leading-[1.05] md:text-5xl lg:text-6xl"
             >
-              Radon Mitigation Systems That Protect Your Family
+              Protect Your Cincinnati Home From Radon
             </motion.h1>
 
             <motion.p
@@ -88,9 +88,9 @@ function Index() {
               transition={{ duration: 0.6, delay: 0.12 }}
               className="mt-6 max-w-2xl text-base leading-relaxed text-navy-foreground/85 md:text-lg"
             >
-              Professional radon testing and mitigation systems serving Cincinnati and surrounding
-              communities, designed around your foundation, installed in a day, and verified with a
-              post-installation test.
+              Professional radon mitigation solutions that reduce indoor radon levels and help
+              protect your home and family, designed around your foundation, installed in a day, and
+              verified with a post-installation test.
             </motion.p>
 
             <motion.div

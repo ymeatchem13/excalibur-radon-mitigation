@@ -1,0 +1,32 @@
+<!doctype html>
+<!--
+  Netlify Forms detection stub. Not linked, not indexed, never seen by a visitor.
+
+  Netlify discovers forms by parsing static HTML in the publish directory at
+  deploy time. This app is server-rendered and has no prerendering configured, so
+  dist/ contains no route HTML at all and the real <form> in
+  src/components/site/QuoteForm.tsx is invisible to that scan. This file is the
+  only form Netlify can see, and QuoteForm POSTs to it.
+
+  The field names below MUST stay in sync with QuoteForm. A name that is missing
+  here is silently dropped from every submission - no error, just absent data.
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <title>Form handler</title>
+  </head>
+  <body>
+    <form name="quote" method="POST" data-netlify="true" netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="quote" />
+      <input type="text" name="bot-field" />
+      <input type="text" name="name" />
+      <input type="email" name="email" />
+      <input type="tel" name="phone" />
+      <input type="text" name="city" />
+      <input type="text" name="service" />
+      <textarea name="message"></textarea>
+    </form>
+  </body>
+</html>

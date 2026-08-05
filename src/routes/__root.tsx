@@ -84,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { property: "og:site_name", content: "Cincinnati Radon Solutions" },
+      { property: "og:site_name", content: "Excalibur Radon Mitigation" },
       { property: "og:type", content: "website" },
       { name: "theme-color", content: "#0A1E3D" },
       // Social scrapers require absolute URLs here; a relative path is ignored.
@@ -94,7 +94,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:image:type", content: "image/png" },
       {
         property: "og:image:alt",
-        content: "Cincinnati Radon Solutions. Safe Home. Healthy Family.",
+        content: "Excalibur Radon Mitigation logo",
       },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: OG_IMAGE },

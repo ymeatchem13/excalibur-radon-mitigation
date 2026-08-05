@@ -11,7 +11,7 @@ import {
 import { ROUTES } from "@/lib/routes";
 import { business, mainNav, serviceNav } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
-import logoUrl from "@/assets/cincinnati_radiation_logo.webp";
+import logoUrl from "@/assets/excalibur-radon-logo.webp";
 
 /* Home renders before the Services dropdown, so mainNav can't be mapped as a
    single list. Split it once here and reuse in both the desktop nav and the
@@ -77,19 +77,28 @@ export function Header() {
       >
         <Link to="/" className="flex shrink-0 items-center">
           {/* Sizes verified against the desktop nav, which appears at lg: at
-              1024px the logo is 192px wide and still leaves ~60px of slack. */}
+              1024px the logo is 192px wide and still leaves ~60px of slack.
+
+              The heights below look arbitrary because they are derived, not
+              chosen. This artwork is 2.09:1, where the previous logo was 1.5:1,
+              so matching the old *heights* would have made it up to 94px wider
+              and pushed it into the nav at lg. They are set to reproduce the
+              approved rendered WIDTHS instead - 117/192/242 unscrolled and
+              108/167/200 scrolled, within ~3px of what shipped before. Retune
+              against width, not height, if the artwork ever changes again. */}
           <img
             src={logoUrl}
             alt={`${business.name} home page`}
-            width={612}
-            height={408}
+            width={620}
+            height={297}
             fetchPriority="high"
             decoding="async"
             className={cn(
               "w-auto transition-[height] duration-200 ease-out",
-              // Each scrolled height clears its container once py-2 (16px) is
-              // accounted for: 72+16<=96, 112+16<=136, 136+16<=160.
-              scrolled ? "h-18 md:h-28 xl:h-34" : "h-20 md:h-32 xl:h-40",
+              // Each height clears its container once py-2 (16px) is accounted
+              // for: scrolled 52+16<=96, 80+16<=136, 96+16<=160; unscrolled
+              // 56+16<=104, 92+16<=152, 116+16<=184.
+              scrolled ? "h-13 md:h-20 xl:h-24" : "h-14 md:h-23 xl:h-29",
             )}
           />
         </Link>

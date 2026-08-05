@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/site/PageHero";
+import { WrittenContact } from "@/components/site/WrittenContact";
 import { business } from "@/lib/site-data";
 import { canonical, ldScript, pageGraph, pageMeta } from "@/lib/seo";
 
-const title = "Terms of Service | Cincinnati Radon Solutions";
+const title = "Terms of Service | Excalibur Radon Mitigation";
 const description =
-  "Terms governing use of the Cincinnati Radon Solutions website, estimates, scheduling, and workmanship warranty information.";
+  "Terms governing use of the Excalibur Radon Mitigation website, along with how estimates, scheduling, and service visits are handled.";
 
 export const Route = createFileRoute("/terms")({
   head: () => ({
@@ -39,8 +40,8 @@ const sections = [
     p: "Testing requires closed-house conditions and uninterrupted access to the placement area. Installation requires access to the work area, an appropriate power source, and a clear path for equipment.",
   },
   {
-    h: "Workmanship warranty",
-    p: "Installations carry a workmanship warranty; specific coverage, duration, and exclusions are stated in your written estimate and invoice. Manufacturer warranties on fans and components are provided by the manufacturer.",
+    h: "Estimates and invoices",
+    p: "Any coverage on workmanship, along with its duration and exclusions, is stated in your written estimate and invoice rather than on this website. Manufacturer warranties on fans and components are provided by the manufacturer.",
   },
   {
     h: "Results and testing",
@@ -58,7 +59,7 @@ function Page() {
       <PageHero
         eyebrow="Terms"
         title="Terms of Service"
-        subtitle="These terms are maintained by Cincinnati Radon Solutions and apply to use of this website and to services we provide."
+        subtitle="These terms are maintained by Excalibur Radon Mitigation and apply to use of this website and to services we provide."
         crumbs={[{ name: "Terms", path: "/terms" }]}
       />
       <section className="section-y">
@@ -70,11 +71,8 @@ function Page() {
             </div>
           ))}
           <p className="text-sm text-muted-foreground">
-            Questions? Call {business.phoneDisplay} or email{" "}
-            <a href={`mailto:${business.email}`} className="font-bold text-brand hover:underline">
-              {business.email}
-            </a>
-            .
+            Questions? Call {business.phoneDisplay} or{" "}
+            <WrittenContact linkClassName="font-bold text-brand hover:underline" />.
           </p>
         </div>
       </section>

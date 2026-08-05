@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone } from "lucide-react";
 import { business, footerNav, legalNav, serviceNav } from "@/lib/site-data";
-import logoUrl from "@/assets/cincinnati_radiation_logo.webp";
+import logoUrl from "@/assets/excalibur-radon-logo.webp";
 
 export function Footer() {
   return (
@@ -11,9 +11,14 @@ export function Footer() {
       <div className="container-full grid gap-10 py-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <div>
           {/* The logo artwork is navy on transparency, so it needs a light plate
-              to stay legible against the navy footer. The circle is sized off the
-              logo's *width* (3:2 aspect). At h-24 the logo is 144px wide, which
-              needs a 192px disc to clear the curve on both sides. */}
+              to stay legible against the navy footer.
+
+              A rectangle inside a circle has to clear the curve on its diagonal,
+              not its width. At h-20 this 2.09:1 artwork renders 167x80, but the
+              opaque content is only 154x64 (the file carries transparent
+              padding), giving a 166px diagonal inside the 192px disc. h-24 would
+              put the diagonal at 199px and clip the corners, which is why the
+              logo shrank rather than the disc growing. */}
           <Link
             to="/"
             className="inline-flex size-48 shrink-0 items-center justify-center rounded-full bg-white shadow-lift"
@@ -21,11 +26,11 @@ export function Footer() {
             <img
               src={logoUrl}
               alt={`${business.name} home page`}
-              width={612}
-              height={408}
+              width={620}
+              height={297}
               loading="lazy"
               decoding="async"
-              className="h-24 w-auto"
+              className="h-20 w-auto"
             />
           </Link>
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-navy-foreground/70">
@@ -33,7 +38,7 @@ export function Footer() {
             Greater Cincinnati and Northern Kentucky.
           </p>
           <p className="mt-4 text-xs font-semibold tracking-widest text-navy-foreground/60 uppercase">
-            Licensed · Insured · Locally Owned
+            Radon Only · EPA Guidance · Free Quotes
           </p>
         </div>
 
@@ -90,15 +95,21 @@ export function Footer() {
             </li>
             <li className="flex items-start gap-2.5">
               <Mail className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <a href={`mailto:${business.email}`} className="break-all hover:underline">
-                {business.email}
-              </a>
+              {business.email ? (
+                <a href={`mailto:${business.email}`} className="break-all hover:underline">
+                  {business.email}
+                </a>
+              ) : (
+                <Link to="/contact" className="hover:underline">
+                  Send us a message
+                </Link>
+              )}
             </li>
             {/* No address row: this is a service-area business with no public
                 premises, and the bottom bar below already states the region, so
                 repeating it here would duplicate the claim inside one footer.
                 The /contact page carries the service-area detail. */}
-            <li className="text-navy-foreground/60">{business.hours}</li>
+            <li className="text-navy-foreground/60">{business.hours ?? "Call for current hours"}</li>
           </ul>
         </div>
       </div>

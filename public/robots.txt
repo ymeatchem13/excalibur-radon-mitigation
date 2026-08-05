@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://cincinnatiradonsolutions.com/sitemap.xml
+Sitemap: https://excaliburradonmitigation.netlify.app/sitemap.xml

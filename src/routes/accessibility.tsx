@@ -1,14 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PageHero } from "@/components/site/PageHero";
+import { WrittenContact } from "@/components/site/WrittenContact";
 import { business } from "@/lib/site-data";
 import { canonical, ldScript, pageGraph, pageMeta } from "@/lib/seo";
 import { ROUTES } from "@/lib/routes";
 
 const { path, crumbs } = ROUTES.accessibility;
 
-const title = "Accessibility Statement | Cincinnati Radon Solutions";
+const title = "Accessibility Statement | Excalibur Radon Mitigation";
 const description =
-  "How we approach accessibility on the Cincinnati Radon Solutions website, the standard we build against, known limitations, and how to report a problem.";
+  "How we approach accessibility on the Excalibur Radon Mitigation website, the standard we build against, known limitations, and how to report a problem.";
 
 export const Route = createFileRoute("/accessibility")({
   head: () => ({
@@ -69,11 +70,9 @@ function Page() {
             </div>
           ))}
           <p className="text-sm text-muted-foreground">
-            Reach us at {business.phoneDisplay} or email{" "}
-            <a href={`mailto:${business.email}`} className="font-bold text-brand hover:underline">
-              {business.email}
-            </a>
-            . We aim to respond within two business days.
+            Reach us at {business.phoneDisplay} or{" "}
+            <WrittenContact linkClassName="font-bold text-brand hover:underline" />. We aim to
+            respond within two business days.
           </p>
         </div>
       </section>

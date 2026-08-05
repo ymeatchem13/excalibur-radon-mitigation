@@ -8,7 +8,7 @@ import { whyUs } from "@/lib/site-data";
 
 const title = "About Us | Cincinnati Radon Mitigation Company";
 const description =
-  "Locally owned radon mitigation company serving Greater Cincinnati and Northern Kentucky. EPA-aligned diagnostics, clean installs, verified results.";
+  "Radon-only mitigation company based in Cincinnati and serving Northern Kentucky. EPA-aligned diagnostics, clean installs, verified results.";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -60,19 +60,21 @@ function Page() {
                 usually under a deadline and usually with very little context.
               </p>
               <p>
-                We built this company around the part of the job that most affects the result:
-                diagnostics. Measuring how air moves under a slab before choosing suction points is
+                Excalibur Radon Mitigation helps Cincinnati-area homeowners address elevated indoor
+                radon with professionally designed mitigation systems, built around the part of the
+                job that most affects the result: diagnostics. Measuring how air moves under a slab
+                before choosing suction points is
                 slower than guessing, and it is the difference between a system that quietly
                 underperforms and one that actually pulls the level down.
               </p>
               <p>
-                Our technicians are trained specifically in radon measurement and mitigation. We do
-                not subcontract installations, and the person who quotes your home is accountable for
-                what the post-mitigation test says.
+                Radon measurement and mitigation is the whole business, not a sideline bolted onto
+                another trade. The person who quotes your home is accountable for what the
+                post-mitigation test ends up saying.
               </p>
               <p>
                 We follow current EPA guidance and national radon mitigation standards, and we put the
-                scope, the price, and the warranty terms in writing before anyone drills anything.
+                scope and the price in writing before anyone drills anything.
               </p>
             </div>
             <Link

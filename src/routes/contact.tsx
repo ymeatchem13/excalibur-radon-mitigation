@@ -13,7 +13,7 @@ const title = "Contact Us | Free Cincinnati Radon Mitigation Quote";
 // snippet and has to stay under 160 characters. It is 155 today. If the number
 // changes, update it here too.
 const description =
-  "Call (513) 854-6650 or request a free radon mitigation or testing estimate for your Cincinnati or Northern Kentucky home. We reply within one business day.";
+  "Call (513) 859-7678 or request a free radon mitigation or testing estimate for your Cincinnati or Northern Kentucky home. We reply within one business day.";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -71,12 +71,20 @@ function Page() {
                 </span>
                 <div>
                   <p className="text-sm font-bold text-navy">Email</p>
-                  <a
-                    href={`mailto:${business.email}`}
-                    className="text-sm break-all text-muted-foreground hover:text-brand"
-                  >
-                    {business.email}
-                  </a>
+                  {business.email ? (
+                    <a
+                      href={`mailto:${business.email}`}
+                      className="text-sm break-all text-muted-foreground hover:text-brand"
+                    >
+                      {business.email}
+                    </a>
+                  ) : (
+                    /* No self-link: the estimate form is on this very page, so
+                       pointing at /contact would be a link to here. */
+                    <p className="text-sm text-muted-foreground">
+                      Use the estimate form on this page and we will reply by email.
+                    </p>
+                  )}
                 </div>
               </li>
               {/* Service area, not an office address. This is a service-area
@@ -90,7 +98,7 @@ function Page() {
                 <div>
                   <p className="text-sm font-bold text-navy">Service Area</p>
                   <p className="text-sm text-muted-foreground">
-                    Greater Cincinnati and Northern Kentucky
+                    Based in Cincinnati, serving Northern Kentucky
                     <br />
                     We come to you — there is no walk-in office.
                   </p>
@@ -102,7 +110,9 @@ function Page() {
                 </span>
                 <div>
                   <p className="text-sm font-bold text-navy">Hours</p>
-                  <p className="text-sm text-muted-foreground">{business.hours}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {business.hours ?? "Call for current hours and scheduling."}
+                  </p>
                 </div>
               </li>
             </ul>
