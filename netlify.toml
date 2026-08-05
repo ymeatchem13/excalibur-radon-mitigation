@@ -1,0 +1,24 @@
+# Netlify build configuration.
+#
+# The deploy target itself is pinned in vite.config.ts (`nitro: { preset: "netlify" }`),
+# not here. That preset writes static assets to dist/ and the SSR handler to
+# .netlify/functions-internal/, which Netlify discovers automatically, so there is
+# deliberately no [functions] block below.
+#
+# Routing is NOT done via _redirects (the preset emits that file empty). The
+# generated function declares `path = "/*"` with `preferStatic = true` in its own
+# config, so static files in dist/ win and everything else falls through to SSR.
+# The preset also regenerates dist/_headers (asset cache-control) on every build,
+# so don't hand-write it; it would be overwritten.
+
+[build]
+  # `npm ci` is explicit rather than left to Netlify's auto-detection: bun.lock is
+  # committed, so Netlify would otherwise install with Bun. This requires
+  # package-lock.json to be committed too - it is not, as of writing.
+  command = "npm ci && npm run build"
+  publish = "dist"
+
+[build.environment]
+  # Matches the local toolchain (v24.14.0). Without this Netlify picks its own
+  # default, and the build would run on a runtime nothing was verified against.
+  NODE_VERSION = "24"
