@@ -76,16 +76,19 @@ export function Header() {
         )}
       >
         <Link to="/" className="flex shrink-0 items-center">
-          {/* Sizes verified against the desktop nav, which appears at lg: at
-              1024px the logo is 192px wide and still leaves ~60px of slack.
+          {/* The heights below look arbitrary because they are derived from a
+              width budget, not chosen. This artwork is 2.09:1, so every 1px of
+              height costs 2.09px of width; tune against the rendered WIDTH, not
+              the height, if the artwork ever changes.
 
-              The heights below look arbitrary because they are derived, not
-              chosen. This artwork is 2.09:1, where the previous logo was 1.5:1,
-              so matching the old *heights* would have made it up to 94px wider
-              and pushed it into the nav at lg. They are set to reproduce the
-              approved rendered WIDTHS instead - 117/192/242 unscrolled and
-              108/167/200 scrolled, within ~3px of what shipped before. Retune
-              against width, not height, if the artwork ever changes again. */}
+              Rendered widths: 150/217/284 unscrolled, 134/192/251 scrolled.
+
+              md: is the constrained one. The desktop nav appears at lg, and at
+              exactly 1024px the row has ~252px for the logo (984px content less
+              ~394px nav, ~306px phone+CTA and 32px of gaps). 217px leaves ~35px
+              of slack, so md: cannot grow further without also tightening the
+              nav or the phone link. base and xl are bounded by the container
+              height instead, and both keep room to spare. */}
           <img
             src={logoUrl}
             alt={`${business.name} home page`}
@@ -96,9 +99,9 @@ export function Header() {
             className={cn(
               "w-auto transition-[height] duration-200 ease-out",
               // Each height clears its container once py-2 (16px) is accounted
-              // for: scrolled 52+16<=96, 80+16<=136, 96+16<=160; unscrolled
-              // 56+16<=104, 92+16<=152, 116+16<=184.
-              scrolled ? "h-13 md:h-20 xl:h-24" : "h-14 md:h-23 xl:h-29",
+              // for: scrolled 64+16<=96, 92+16<=136, 120+16<=160; unscrolled
+              // 72+16<=104, 104+16<=152, 136+16<=184.
+              scrolled ? "h-16 md:h-23 xl:h-30" : "h-18 md:h-26 xl:h-34",
             )}
           />
         </Link>
