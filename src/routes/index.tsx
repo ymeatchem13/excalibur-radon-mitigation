@@ -181,9 +181,14 @@ function Index() {
                 bedrock both generate radon and give it pathways into basements through slab cracks,
                 sump pits, block walls, and utility penetrations.
               </p>
+              {/* Every figure here is EPA/CDC-published and attributed in-sentence.
+                  Keep the attribution if this copy is ever edited: the numbers are
+                  only defensible while the source is named. */}
               <p>
-                The EPA identifies long-term radon exposure as the leading cause of lung cancer among
-                people who have never smoked and recommends fixing homes at or above 4.0 pCi/L.
+                The EPA identifies radon as the second leading cause of lung cancer in the United
+                States, linked to roughly 21,000 deaths a year, and the leading cause among people
+                who have never smoked. The risk compounds for smokers: radon and cigarette smoke
+                together carry a higher risk than either one alone.
               </p>
               <p>
                 Mitigation reverses the pressure that pulls soil gas indoors. A sealed suction point
@@ -194,14 +199,93 @@ function Index() {
             {/* Was a link into /blog/what-is-radon. The blog is unlisted now, so
                 this points at /faqs instead, which opens with the same "What is
                 radon?" question and is indexed. */}
+            {/* Secondary, not the crimson primary: this goes to the FAQs, and a
+                second solid brand button would compete with the Get Free Estimate
+                CTAs for the same attention.
+
+                aria-label because "Learn more" is the seventh identical link text
+                on this page - the six service cards below use it too - and a
+                screen reader listing links gets seven indistinguishable entries
+                without it. The visible label stays "Learn more". */}
             <Link
               to={ROUTES.faqs.path}
-              className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-brand hover:underline"
+              aria-label="Learn more about radon in the FAQs"
+              className="mt-7 inline-flex items-center gap-2 rounded-xl border border-navy/15 bg-secondary px-6 py-3.5 text-sm font-bold text-navy transition-colors hover:bg-accent"
             >
-              Read the plain-English radon FAQs
+              Learn more
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
           </Reveal>
+        </div>
+      </section>
+
+      {/* The risk, and the fix. The section above explains what radon is; this one
+          answers the two questions a homeowner actually has next - how bad is it,
+          and can it be fixed - side by side so the reassurance lands with the
+          risk rather than pages away from it.
+
+          Wording is deliberate. No "permanent", no "safe levels", no "increases
+          your home's value": those are the unverifiable claims stripped during the
+          rebrand, and they are not coming back in through a new section. */}
+      <section className="bg-surface section-y">
+        <div className="container-page">
+          <SectionHeading
+            eyebrow="The Risk, And The Fix"
+            title="Radon is a serious problem with a solved answer"
+            intro="Nobody wants to hear their home has a radioactive gas problem. The useful part is that radon is one of the few household hazards with a well-understood engineering fix and a test that proves it worked."
+          />
+          <div className="mt-14 grid gap-6 lg:grid-cols-2">
+            <Reveal className="h-full rounded-3xl border border-border bg-card p-7 shadow-soft md:p-9">
+              <h3 className="text-xl font-extrabold text-navy md:text-2xl">Why it matters</h3>
+              <ul className="mt-6 space-y-4">
+                {[
+                  "The EPA ranks radon the second leading cause of lung cancer in the US.",
+                  "You cannot see it, smell it, or taste it. Testing is the only way to know.",
+                  "Exposure adds up over years, and it affects everyone in the household.",
+                  "For smokers the risk is higher still, beyond either factor on its own.",
+                ].map((point) => (
+                  <li
+                    key={point}
+                    className="flex items-start gap-3 text-sm leading-relaxed text-muted-foreground md:text-base"
+                  >
+                    <span
+                      className="mt-2 size-2 shrink-0 rounded-full bg-brand"
+                      aria-hidden="true"
+                    />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+
+            <Reveal
+              delay={0.08}
+              className="h-full rounded-3xl border border-border bg-card p-7 shadow-soft md:p-9"
+            >
+              <h3 className="text-xl font-extrabold text-navy md:text-2xl">
+                What mitigation actually does
+              </h3>
+              <ul className="mt-6 space-y-4">
+                {[
+                  "A properly designed system lowers indoor radon, confirmed by a post-mitigation test.",
+                  "It treats the whole house, not a single room or the basement alone.",
+                  "You keep the result and the system details in writing, ready for a future sale.",
+                  "The fan is quiet, draws about as much power as a light bulb, and runs continuously.",
+                ].map((point) => (
+                  <li
+                    key={point}
+                    className="flex items-start gap-3 text-sm leading-relaxed text-muted-foreground md:text-base"
+                  >
+                    <CheckCircle2
+                      className="mt-0.5 size-5 shrink-0 text-success"
+                      aria-hidden="true"
+                    />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            </Reveal>
+          </div>
         </div>
       </section>
 

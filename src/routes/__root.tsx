@@ -86,7 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { property: "og:site_name", content: "Excalibur Radon Mitigation" },
       { property: "og:type", content: "website" },
-      { name: "theme-color", content: "#0A1E3D" },
+      { name: "theme-color", content: "#0A0A0A" },
       // Social scrapers require absolute URLs here; a relative path is ignored.
       { property: "og:image", content: OG_IMAGE },
       { property: "og:image:width", content: "1200" },

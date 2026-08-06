@@ -12,18 +12,18 @@ type Business = {
   shortName: string;
   phoneDisplay: string;
   phoneHref: string;
-  /* null, never a placeholder string like "[EXCALIBUR EMAIL ADDRESS]".
-
-     A bracketed token is a string: it type-checks, it renders, and it
-     interpolates into `mailto:` and into JSON-LD without complaint, so it
-     ships. null is the only representation the compiler can enforce - every
-     consumer is forced to branch, and `tsc` enumerates them for you.
-
-     Fill this in and every call site below lights up with no other edit. */
+  /* Stays `string | null` even though it is now set. The type is what keeps the
+     fallbacks in WrittenContact.tsx, Footer.tsx and contact.tsx compiling, and
+     it is what lets the address be pulled again without touching six files.
+     Never assign a placeholder string like "[EXCALIBUR EMAIL ADDRESS]": a
+     bracketed token type-checks, renders, and interpolates into `mailto:` and
+     JSON-LD without complaint, so it would ship. */
   email: string | null;
-  /* null for the same reason as `email`. The Google Business Profile publishes
-     only Tuesday 8 AM-5 PM, which is not a week; asserting the rest would be
-     inventing it. See MIGRATION-NOTES.md. */
+  /* Stays `string | null` for the same reason as `email`, even though it is now
+     set: the Google Business Profile publishes a full week, so there is nothing
+     left to invent. The type is what keeps the `??` fallbacks in Footer.tsx and
+     contact.tsx compiling, and what lets the hours be pulled again without
+     editing those files. See MIGRATION-NOTES.md. */
   hours: string | null;
   /* Asserted in STRUCTURED DATA ONLY - see organizationNode in seo.ts. Nothing
      rendered prints these fields. */
@@ -48,8 +48,13 @@ export const business: Business = {
      rather than restating the digits, so there is no third copy to drift. */
   phoneDisplay: "(513) 859-7678",
   phoneHref: "tel:+15138597678",
-  email: null,
-  hours: null,
+  /* Lowercased on purpose: Gmail local parts are case-insensitive, and a
+     lowercase address is the display convention. */
+  email: "excaliburradonmitigation@gmail.com",
+  /* Closed days are implied by omission rather than spelled out, which is the
+     ordinary convention and keeps this readable in the narrow footer column.
+     Mirrored in structured data by `openingHours` in seo.ts - change both. */
+  hours: "Mon–Fri 8 AM–5 PM",
   /* Real and occupied, and asserted in structured data only. No rendered page
      prints it, and the visible copy keeps the "we come to you, there is no
      walk-in office" framing, which is the accurate description of a

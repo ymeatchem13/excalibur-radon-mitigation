@@ -63,8 +63,11 @@ export function Header() {
   return (
     <header
       className={cn(
-        "sticky top-0 z-50 w-full border-b border-transparent bg-background/90 backdrop-blur transition-shadow",
-        scrolled && "border-border shadow-soft",
+        /* Dark bar, not the page background: the logo artwork is silver on
+           transparency and scores 1.8:1 on white against 9.8:1 here. Every
+           foreground in this header is therefore light-on-dark. */
+        "sticky top-0 z-50 w-full border-b border-transparent bg-navy/95 backdrop-blur transition-shadow",
+        scrolled && "border-navy-foreground/10 shadow-soft",
       )}
     >
       <div
@@ -77,28 +80,34 @@ export function Header() {
       >
         <Link to="/" className="flex shrink-0 items-center">
           {/* Sizes verified against the desktop nav, which appears at lg: at
-              1024px the logo is 192px wide and still leaves ~60px of slack.
+              1024px the logo is ~190px wide and still leaves slack.
 
               The heights below look arbitrary because they are derived, not
-              chosen. This artwork is 2.09:1, where the previous logo was 1.5:1,
-              so matching the old *heights* would have made it up to 94px wider
-              and pushed it into the nav at lg. They are set to reproduce the
-              approved rendered WIDTHS instead - 117/192/242 unscrolled and
-              108/167/200 scrolled, within ~3px of what shipped before. Retune
-              against width, not height, if the artwork ever changes again. */}
+              chosen. Each successive logo has had a different aspect ratio
+              (1.5:1, then 2.09:1, now 2.369:1), so they are set to reproduce the
+              approved rendered WIDTHS - 114/190/237 unscrolled and 104/171/199
+              scrolled. Matching the old heights instead would widen the logo
+              until it collides with the nav at lg. Retune against width, not
+              height, if the artwork ever changes again. */}
           <img
             src={logoUrl}
             alt={`${business.name} home page`}
-            width={620}
-            height={297}
+            width={443}
+            height={187}
             fetchPriority="high"
             decoding="async"
             className={cn(
               "w-auto transition-[height] duration-200 ease-out",
               // Each height clears its container once py-2 (16px) is accounted
-              // for: scrolled 52+16<=96, 80+16<=136, 96+16<=160; unscrolled
-              // 56+16<=104, 92+16<=152, 116+16<=184.
-              scrolled ? "h-13 md:h-20 xl:h-24" : "h-14 md:h-23 xl:h-29",
+              // for: scrolled 72+16<=96, 84+16<=160; unscrolled 80+16<=104,
+              // 100+16<=184. Mobile sits 8px inside the bar rather than the 40px
+              // it used to waste - the small-screen logo was bounded by nothing.
+              //
+              // There is no md step any more because base and md resolved to the
+              // same height once mobile grew. The logo is 190px wide from 0 to
+              // the xl breakpoint, which is the width the desktop nav was
+              // measured against at lg.
+              scrolled ? "h-18 xl:h-21" : "h-20 xl:h-25",
             )}
           />
         </Link>
@@ -114,16 +123,16 @@ export function Header() {
           <Link
             to={homeNav.to}
             activeOptions={{ exact: true }}
-            className="rounded-lg px-2 py-2 text-sm font-semibold transition-colors hover:text-brand xl:px-3"
-            activeProps={{ className: "text-brand" }}
-            inactiveProps={{ className: "text-foreground" }}
+            className="rounded-lg px-2 py-2 text-sm font-semibold transition-colors hover:text-brand-on-dark xl:px-3"
+            activeProps={{ className: "text-brand-on-dark" }}
+            inactiveProps={{ className: "text-navy-foreground/85" }}
           >
             {homeNav.label}
           </Link>
           <div className="group relative">
             <button
               type="button"
-              className="flex items-center gap-1 rounded-lg px-2 py-2 text-sm font-semibold text-foreground transition-colors hover:text-brand xl:px-3"
+              className="flex items-center gap-1 rounded-lg px-2 py-2 text-sm font-semibold text-navy-foreground/85 transition-colors hover:text-brand-on-dark xl:px-3"
               aria-haspopup="true"
             >
               Services <ChevronDown className="size-4" aria-hidden="true" />
@@ -159,9 +168,9 @@ export function Header() {
             <Link
               key={item.to}
               to={item.to}
-              className="rounded-lg px-2 py-2 text-sm font-semibold transition-colors hover:text-brand xl:px-3"
-              activeProps={{ className: "text-brand" }}
-              inactiveProps={{ className: "text-foreground" }}
+              className="rounded-lg px-2 py-2 text-sm font-semibold transition-colors hover:text-brand-on-dark xl:px-3"
+              activeProps={{ className: "text-brand-on-dark" }}
+              inactiveProps={{ className: "text-navy-foreground/85" }}
             >
               {item.label}
             </Link>
@@ -171,7 +180,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <a
             href={business.phoneHref}
-            className="hidden items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold text-navy transition-colors hover:text-brand md:inline-flex"
+            className="hidden items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold text-navy-foreground transition-colors hover:text-brand-on-dark md:inline-flex"
           >
             <Phone className="size-4" aria-hidden="true" />
             {business.phoneDisplay}
@@ -188,7 +197,7 @@ export function Header() {
               <button
                 type="button"
                 aria-label="Open menu"
-                className="grid size-11 place-items-center rounded-xl border border-border text-navy lg:hidden"
+                className="grid size-11 place-items-center rounded-xl border border-navy-foreground/25 text-navy-foreground lg:hidden"
               >
                 <Menu className="size-5" aria-hidden="true" />
               </button>

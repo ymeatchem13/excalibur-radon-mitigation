@@ -6,13 +6,18 @@
 
 /*
  * Excalibur Radon Mitigation design system.
- * Logo palette: navy #0A1E3D, blue #1D6FE8, green #3BAE2B,
- * body gray #374151, off-white #F8FAFC. All tokens below are OKLCH.
+ * Logo palette: near-black #0A0A0A, crimson #A82830, metallic silver #C0C0C0,
+ * body gray #3F3F46, off-white #FAFAFA. All tokens below are OKLCH.
+ *
+ * The logo is silver-on-transparent and only reads on a dark surface (10.9:1 on
+ * near-black, 1.8:1 on white), which is why the header and footer are dark. Its
+ * neutrals are achromatic, so the greys here carry almost no hue - do not
+ * re-introduce a blue cast.
  *
  * NOTE: --secondary, --accent and --muted are shadcn *neutrals* (hover and
  * subtle-panel surfaces used across every component in src/components/ui).
- * They are deliberately NOT the brand blue/green. Assigning brand hues here
- * would turn every dropdown hover and muted panel blue or green.
+ * They are deliberately NOT the brand crimson. Assigning brand hues here would
+ * turn every dropdown hover and muted panel red.
  */
 
 @theme inline {
@@ -54,6 +59,7 @@
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-brand-soft: var(--brand-soft);
+  --color-brand-on-dark: var(--brand-on-dark);
   --color-success: var(--success);
   --color-success-foreground: var(--success-foreground);
   --color-surface: var(--surface);
@@ -61,50 +67,56 @@
   /* Shadow colors must stay literals: @theme inline cannot alpha-modify a var().
      Keep in sync with --navy / --brand in :root below. Alphas are slightly
      heavier than before because these now sit on off-white, not pure white. */
-  --shadow-soft: 0 1px 2px oklch(0.2384 0.0649 259 / 0.05), 0 8px 24px oklch(0.2384 0.0649 259 / 0.08);
-  --shadow-lift: 0 2px 6px oklch(0.2384 0.0649 259 / 0.06), 0 24px 48px oklch(0.2384 0.0649 259 / 0.12);
-  --shadow-brand: 0 12px 32px oklch(0.5659 0.1988 259.2 / 0.28);
+  --shadow-soft: 0 1px 2px oklch(0.1448 0 0 / 0.05), 0 8px 24px oklch(0.1448 0 0 / 0.08);
+  --shadow-lift: 0 2px 6px oklch(0.1448 0 0 / 0.06), 0 24px 48px oklch(0.1448 0 0 / 0.12);
+  --shadow-brand: 0 12px 32px oklch(0.4851 0.1638 22.8 / 0.28);
 }
 
 :root {
   --radius: 0.875rem;
 
-  --background: oklch(0.9842 0.0034 247.9); /* #F8FAFC */
-  --foreground: oklch(0.3729 0.0306 259.7); /* #374151, 9.85:1 on background */
+  --background: oklch(0.9851 0 89.9); /* #FAFAFA */
+  --foreground: oklch(0.3703 0.0119 285.8); /* #3F3F46, 10.01:1 on background */
   --card: oklch(1 0 0); /* white, lifts off the off-white page */
-  --card-foreground: oklch(0.3729 0.0306 259.7);
+  --card-foreground: oklch(0.3703 0.0119 285.8);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.3729 0.0306 259.7);
+  --popover-foreground: oklch(0.3703 0.0119 285.8);
 
-  --primary: oklch(0.5659 0.1988 259.2); /* #1D6FE8 */
+  --primary: oklch(0.4851 0.1638 22.8); /* #A82830, keep in sync with --brand */
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.956 0.008 250); /* neutral, see note above */
-  --secondary-foreground: oklch(0.2384 0.0649 259);
-  --muted: oklch(0.956 0.008 250); /* neutral */
-  --muted-foreground: oklch(0.53 0.028 259); /* 5.04:1 on background */
-  --accent: oklch(0.945 0.019 259); /* neutral */
-  --accent-foreground: oklch(0.2384 0.0649 259);
-  --destructive: oklch(0.577 0.245 27.325);
+  --secondary: oklch(0.9554 0.0013 286.4); /* neutral, see note above */
+  --secondary-foreground: oklch(0.1448 0 0);
+  --muted: oklch(0.9554 0.0013 286.4); /* neutral */
+  --muted-foreground: oklch(0.5305 0.0124 286); /* #6B6B73, 5.06:1 on background */
+  --accent: oklch(0.9346 0.0027 286.3); /* neutral */
+  --accent-foreground: oklch(0.1448 0 0);
+  /* #C2410C. Deliberately NOT a crimson: --brand is already a red, so an error
+     sharing its hue would read as a call to action. This sits 21 degrees away in
+     hue and still clears 4.96:1 on --background. */
+  --destructive: oklch(0.5106 0.1638 42);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.912 0.011 255);
-  --input: oklch(0.912 0.011 255);
-  --ring: oklch(0.5659 0.1988 259.2);
+  --border: oklch(0.8954 0.0041 286.3);
+  --input: oklch(0.8954 0.0041 286.3);
+  --ring: oklch(0.4851 0.1638 22.8); /* keep in sync with --brand */
 
-  --navy: oklch(0.2384 0.0649 259); /* #0A1E3D */
+  --navy: oklch(0.1448 0 0); /* #0A0A0A near-black; logo silver = 10.88:1 */
   --navy-foreground: oklch(1 0 0);
-  --navy-soft: oklch(0.315 0.062 259);
-  --brand: oklch(0.5659 0.1988 259.2); /* #1D6FE8 */
-  --brand-foreground: oklch(1 0 0); /* white on brand = 4.67:1 */
-  --brand-soft: oklch(0.945 0.029 259);
-  --success: oklch(0.6611 0.1956 141.4); /* #3BAE2B */
-  --success-foreground: oklch(0.2384 0.0649 259); /* navy on green = 5.75:1; white would be 2.89:1 */
-  --surface: oklch(0.966 0.006 250); /* recessed band, one step below --background */
+  --navy-soft: oklch(0.2603 0 0); /* #242424 */
+  --brand: oklch(0.4851 0.1638 22.8); /* #A82830, 6.68:1 on background */
+  --brand-foreground: oklch(1 0 0); /* white on brand = 6.97:1 */
+  --brand-soft: oklch(0.9454 0.0153 12.4); /* #F7E9EA */
+  /* #E06A75. --brand is only 2.55:1 on --navy, so it must never be used as text
+     on a dark surface. Use this instead: 6.12:1 on the near-black. */
+  --brand-on-dark: oklch(0.668 0.1473 16.2);
+  --success: oklch(0.6611 0.1956 141.4); /* #3BAE2B, kept: green reads as "good" */
+  --success-foreground: oklch(0.1448 0 0); /* near-black on green = 6.86:1 */
+  --surface: oklch(0.9674 0.0013 286.4); /* recessed band, one step below --background */
 }
 
 /*
  * Neutral ladder, lightest to darkest, keep in this order:
- *   card 1.000 > background 0.9842 > surface 0.966 > secondary/muted 0.956
- *   > accent 0.945 > border/input 0.912
+ *   card 1.000 > background 0.9851 > surface 0.9674 > secondary/muted 0.9554
+ *   > accent 0.9346 > border/input 0.8954
  * If --secondary ever rises above --surface, `hover:bg-secondary` inside a
  * `bg-surface` section becomes invisible.
  */

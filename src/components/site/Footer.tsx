@@ -10,24 +10,17 @@ export function Footer() {
           gutter rather than stopping at the 1280px content column. */}
       <div className="container-full grid gap-10 py-16 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         <div>
-          {/* The logo artwork is navy on transparency, so it needs a light plate
-              to stay legible against the navy footer.
-
-              A rectangle inside a circle has to clear the curve on its diagonal,
-              not its width. At h-20 this 2.09:1 artwork renders 167x80, but the
-              opaque content is only 154x64 (the file carries transparent
-              padding), giving a 166px diagonal inside the 192px disc. h-24 would
-              put the diagonal at 199px and clip the corners, which is why the
-              logo shrank rather than the disc growing. */}
-          <Link
-            to="/"
-            className="inline-flex size-48 shrink-0 items-center justify-center rounded-full bg-white shadow-lift"
-          >
+          {/* No light plate here any more. The previous artwork was dark on
+              transparency and needed a white disc to be legible against the dark
+              footer; this one is silver on transparency and scores 9.8:1 sitting
+              directly on it. A white disc would now hide the logo, not reveal
+              it. If the artwork ever goes dark again, bring the plate back. */}
+          <Link to="/" className="inline-flex shrink-0 items-center">
             <img
               src={logoUrl}
               alt={`${business.name} home page`}
-              width={620}
-              height={297}
+              width={443}
+              height={187}
               loading="lazy"
               decoding="async"
               className="h-20 w-auto"

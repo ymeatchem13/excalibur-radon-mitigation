@@ -77,12 +77,19 @@ const orgRef = { "@id": ORG_ID };
  * removal here.
  *
  * `email` is a conditional spread because business.email is null until a real
- * inbox is confirmed; a placeholder must never reach the graph. `openingHours`
- * and `priceRange` are absent for the same reason - the hours are unconfirmed
- * and there is no price list. Both are Google-recommended rather than required,
- * so their absence is a warning in the Rich Results Test, never an error.
- * priceRange in particular must stay out: the FAQ is explicit that the ranges
- * it quotes are the EPA's and other companies', not ours.
+ * inbox is confirmed; a placeholder must never reach the graph.
+ *
+ * `openingHours` is asserted from the week the Google Business Profile actually
+ * publishes, and is the one claim here that IS also rendered - business.hours in
+ * site-data.ts prints it in the footer and on /contact. Keep the two in step.
+ * Saturday and Sunday are closed, and closed days are expressed by leaving them
+ * out of the day span: that is what schema.org's shorthand means, so do not add
+ * an entry asserting them.
+ *
+ * `priceRange` stays absent and must. It is Google-recommended rather than
+ * required, so its absence is a warning in the Rich Results Test and never an
+ * error, and the FAQ is explicit that the ranges it quotes are the EPA's and
+ * other companies', not ours.
  *
  * Still absent on purpose: aggregateRating/review. There is no review data
  * anywhere on this site, and inventing it is a manual-action risk.
@@ -114,6 +121,8 @@ export const organizationNode = {
   // and could silently drift from the tel: link. Yields E.164, which is what
   // Google expects for `telephone`.
   telephone: business.phoneHref.replace(/^tel:/, ""),
+  // Day-span shorthand, 24-hour times. Sat/Sun are closed and stay out by design.
+  openingHours: "Mo-Fr 08:00-17:00",
   description:
     "Radon testing and radon mitigation systems for homes and commercial buildings throughout Greater Cincinnati and Northern Kentucky, installed to current EPA guidance.",
   knowsAbout: [
