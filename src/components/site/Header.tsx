@@ -79,16 +79,20 @@ export function Header() {
         )}
       >
         <Link to="/" className="flex shrink-0 items-center">
-          {/* Sizes verified against the desktop nav, which appears at lg: at
-              1024px the logo is 192px wide and still leaves ~60px of slack.
+          {/* The heights below look arbitrary because they are derived, not
+              chosen. This artwork is 2.369:1 (443x187), so a height change moves
+              the width more than twice as fast - always retune against the
+              rendered WIDTH, not the height, or the logo walks into the desktop
+              nav at lg before anything looks wrong at other sizes.
 
-              The heights below look arbitrary because they are derived, not
-              chosen. This artwork is 2.09:1, where the previous logo was 1.5:1,
-              so matching the old *heights* would have made it up to 94px wider
-              and pushed it into the nav at lg. They are set to reproduce the
-              approved rendered WIDTHS instead - 117/192/242 unscrolled and
-              108/167/200 scrolled, within ~3px of what shipped before. Retune
-              against width, not height, if the artwork ever changes again. */}
+              Measured widths at the current values:
+                unscrolled  190 / 218 / 275   (base / md / xl)
+                scrolled    171 / 190 / 227
+
+              The binding constraint is lg, where the nav appears but md sizing
+              is still in force: 218px wide leaves 27px of clearance before the
+              nav at 1024px. That is the number to watch. Everything else has
+              room to spare. */}
           <img
             src={logoUrl}
             alt={`${business.name} home page`}
@@ -99,9 +103,14 @@ export function Header() {
             className={cn(
               "w-auto transition-[height] duration-200 ease-out",
               // Each height clears its container once py-2 (16px) is accounted
-              // for: scrolled 52+16<=96, 80+16<=136, 96+16<=160; unscrolled
-              // 56+16<=104, 92+16<=152, 116+16<=184.
-              scrolled ? "h-13 md:h-20 xl:h-24" : "h-14 md:h-23 xl:h-29",
+              // for: scrolled 72+16<=96, 80+16<=136, 96+16<=160; unscrolled
+              // 80+16<=104, 92+16<=152, 116+16<=184.
+              //
+              // The base values sit 8px inside the bar. Nothing constrains the
+              // logo at mobile widths - the nav is behind a hamburger and the
+              // phone and CTA buttons are hidden below sm/md - so the only limit
+              // is the bar height, and the previous 56px left 32px of it unused.
+              scrolled ? "h-18 md:h-20 xl:h-24" : "h-20 md:h-23 xl:h-29",
             )}
           />
         </Link>
@@ -188,12 +197,17 @@ export function Header() {
 
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
+              {/* No border box: the icon carries itself at this size. size-11 is
+                  kept even though nothing draws it - it is the 44px tap target,
+                  which is the WCAG 2.5.5 minimum, so it must not shrink to fit
+                  the glyph. rounded-xl is likewise not dead: Chrome and Safari
+                  shape the default focus outline to border-radius. */}
               <button
                 type="button"
                 aria-label="Open menu"
-                className="grid size-11 place-items-center rounded-xl border border-navy-foreground/25 text-navy-foreground lg:hidden"
+                className="grid size-11 place-items-center rounded-xl text-navy-foreground transition-colors hover:text-brand-on-dark lg:hidden"
               >
-                <Menu className="size-5" aria-hidden="true" />
+                <Menu className="size-7" aria-hidden="true" />
               </button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[86vw] max-w-sm overflow-y-auto">
