@@ -80,15 +80,15 @@ export function Header() {
       >
         <Link to="/" className="flex shrink-0 items-center">
           {/* Sizes verified against the desktop nav, which appears at lg: at
-              1024px the logo is ~190px wide and still leaves slack.
+              1024px the logo is 192px wide and still leaves ~60px of slack.
 
               The heights below look arbitrary because they are derived, not
-              chosen. Each successive logo has had a different aspect ratio
-              (1.5:1, then 2.09:1, now 2.369:1), so they are set to reproduce the
-              approved rendered WIDTHS - 114/190/237 unscrolled and 104/171/199
-              scrolled. Matching the old heights instead would widen the logo
-              until it collides with the nav at lg. Retune against width, not
-              height, if the artwork ever changes again. */}
+              chosen. This artwork is 2.09:1, where the previous logo was 1.5:1,
+              so matching the old *heights* would have made it up to 94px wider
+              and pushed it into the nav at lg. They are set to reproduce the
+              approved rendered WIDTHS instead - 117/192/242 unscrolled and
+              108/167/200 scrolled, within ~3px of what shipped before. Retune
+              against width, not height, if the artwork ever changes again. */}
           <img
             src={logoUrl}
             alt={`${business.name} home page`}
@@ -99,15 +99,9 @@ export function Header() {
             className={cn(
               "w-auto transition-[height] duration-200 ease-out",
               // Each height clears its container once py-2 (16px) is accounted
-              // for: scrolled 72+16<=96, 84+16<=160; unscrolled 80+16<=104,
-              // 100+16<=184. Mobile sits 8px inside the bar rather than the 40px
-              // it used to waste - the small-screen logo was bounded by nothing.
-              //
-              // There is no md step any more because base and md resolved to the
-              // same height once mobile grew. The logo is 190px wide from 0 to
-              // the xl breakpoint, which is the width the desktop nav was
-              // measured against at lg.
-              scrolled ? "h-18 xl:h-21" : "h-20 xl:h-25",
+              // for: scrolled 52+16<=96, 80+16<=136, 96+16<=160; unscrolled
+              // 56+16<=104, 92+16<=152, 116+16<=184.
+              scrolled ? "h-13 md:h-20 xl:h-24" : "h-14 md:h-23 xl:h-29",
             )}
           />
         </Link>
