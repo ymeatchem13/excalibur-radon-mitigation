@@ -26,6 +26,16 @@
   # default, and the build would run on a runtime nothing was verified against.
   NODE_VERSION = "24"
 
+  # GA4 property for excaliburradon.com. Committed rather than set in the
+  # Netlify UI: a measurement ID is public (it ships in the page source on every
+  # request) and is not a credential, so keeping it here means a clean checkout
+  # builds a correctly-instrumented site with no out-of-band setup step.
+  #
+  # Read by src/routes/__root.tsx. If this is ever unset, the build succeeds and
+  # silently ships with NO analytics - there is no error to catch it, so verify
+  # the gtag script is present in the deployed HTML after changing this.
+  VITE_GA_MEASUREMENT_ID = "G-PDTHQ1WPQE"
+
 # The site is excaliburradon.com. The .netlify.app host it was built on stays
 # reachable after a custom domain is attached and serves a byte-identical copy,
 # which is duplicate content on two hosts - so send it to the real domain.

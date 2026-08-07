@@ -8,6 +8,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { CallLink } from "./CallLink";
 import { ROUTES } from "@/lib/routes";
 import { business, mainNav, serviceNav } from "@/lib/site-data";
 import { cn } from "@/lib/utils";
@@ -181,13 +182,13 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <a
-            href={business.phoneHref}
+          <CallLink
+            location="header"
             className="hidden items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold text-navy-foreground transition-colors hover:text-brand-on-dark md:inline-flex"
           >
             <Phone className="size-4" aria-hidden="true" />
             {business.phoneDisplay}
-          </a>
+          </CallLink>
           <Link
             to="/contact"
             className="hidden rounded-xl bg-brand px-4 py-2.5 text-sm font-bold text-brand-foreground shadow-brand transition-transform hover:-translate-y-0.5 sm:inline-flex"

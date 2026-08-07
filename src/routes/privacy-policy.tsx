@@ -39,9 +39,13 @@ const sections = [
     h: "Sharing",
     p: "We share information only with service providers that help us operate the business (for example, scheduling or email tools) and only to the extent necessary, or where required by law.",
   },
+  /* Names both analytics tools rather than saying "analytics". The earlier
+     wording predated Google Analytics, which unlike the cookieless Ahrefs tool
+     does set cookies - a policy that does not say so is inaccurate. Update this
+     paragraph whenever a tracking script is added to __root.tsx. */
   {
     h: "Cookies and analytics",
-    p: "Our site may use cookies and privacy-respecting analytics to understand how visitors use the pages. You can disable cookies in your browser without losing access to site content.",
+    p: "We use two analytics tools to understand how visitors use the site. Ahrefs Web Analytics is cookieless and does not track individuals. Google Analytics 4 sets cookies to recognize returning visits and reports on pages viewed, referring source, approximate location, and actions such as requesting an estimate or tapping our phone number. These are reported to us only in aggregate; we do not send your name, email address, or phone number to Google. You can disable cookies in your browser, or install Google's opt-out add-on, without losing access to any site content.",
   },
   {
     h: "Data retention and security",

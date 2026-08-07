@@ -9,6 +9,7 @@ import { CtaBand, SectionHeading } from "@/components/site/PageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
 import { ServiceAreaMap } from "@/components/site/ServiceAreaMap";
 import { FaqAccordion } from "@/components/site/FaqAccordion";
+import { CallLink } from "@/components/site/CallLink";
 import { serviceIcons } from "@/components/site/service-icons";
 import { business, faqs, services, stats, steps, trustBadges, whyUs } from "@/lib/site-data";
 import { canonical, ldScript, pageGraph, pageMeta } from "@/lib/seo";
@@ -105,13 +106,13 @@ function Index() {
               >
                 Get Free Estimate
               </Link>
-              <a
-                href={business.phoneHref}
+              <CallLink
+                location="home_hero"
                 className="inline-flex items-center gap-2 rounded-xl border border-navy-foreground/25 px-6 py-3.5 text-sm font-bold transition-colors hover:bg-navy-foreground/10"
               >
                 <Phone className="size-4" aria-hidden="true" />
                 Call {business.phoneDisplay}
-              </a>
+              </CallLink>
             </motion.div>
 
             <motion.ul
@@ -445,13 +446,13 @@ function Index() {
                 </li>
               ))}
             </ul>
-            <a
-              href={business.phoneHref}
+            <CallLink
+              location="home_bottom"
               className="mt-8 inline-flex items-center gap-2 text-lg font-extrabold text-brand"
             >
               <Phone className="size-5" aria-hidden="true" />
               {business.phoneDisplay}
-            </a>
+            </CallLink>
           </Reveal>
           <Reveal delay={0.08}>
             <QuoteForm />

@@ -19,7 +19,29 @@ import { SITE_URL } from "@/lib/site-data";
 
 const OG_IMAGE = `${SITE_URL}/og-image.png`;
 
-const GA_MEASUREMENT_ID = "G-PDTHQ1WPQE";
+/* Read from the environment rather than hardcoded so a fork, a staging site or
+   a future property swap does not require a code change. Vite replaces
+   `import.meta.env.VITE_*` at build time in both the client and the SSR bundle,
+   so this is safe to read inside head(), which runs on both.
+
+   The value is set in netlify.toml's [build.environment], not the Netlify UI: a
+   measurement ID is not a secret, and keeping it in the repo means a build is
+   reproducible from a clean checkout. See .env.example for local use.
+
+   Dot access, not import.meta.env["..."] - only the dotted form is replaced
+   with a literal at build time, and the literal is what lets the disabled
+   branch below be dropped from the bundle entirely. src/vite-env.d.ts declares
+   the property so this compiles under noPropertyAccessFromIndexSignature.
+
+   Empty in dev unless a .env sets it, which is what suppresses the tag below. */
+const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID ?? "";
+
+/* Two conditions, both required. Without PROD, every `npm run dev` session
+   would write real pageviews and test form submissions into the live property,
+   which is exactly what makes a small property's data untrustworthy. Without
+   the ID check, a build with the variable unset would emit `gtag/js?id=` and
+   fail at runtime. */
+const GA_ENABLED = import.meta.env.PROD && GA_MEASUREMENT_ID !== "";
 
 function NotFoundComponent() {
   return (
@@ -133,16 +155,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       // Google Analytics 4 (gtag.js). Same reasoning as Ahrefs above: the root
       // route is the only place a script can load once for every page.
-      {
-        src: `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`,
-        async: true,
-      },
-      {
-        children: `window.dataLayer = window.dataLayer || [];
+      //
+      // Unlike Ahrefs, this pair IS gated - GA4 has no domain verification and
+      // will happily record localhost traffic against the production property.
+      // When the spread is empty, lib/analytics.ts finds no window.gtag and
+      // every trackEvent call becomes a no-op on its own.
+      ...(GA_ENABLED
+        ? [
+            {
+              src: `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`,
+              async: true,
+            },
+            {
+              children: `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', '${GA_MEASUREMENT_ID}');`,
-      },
+            },
+          ]
+        : []),
     ],
   }),
   shellComponent: RootShell,

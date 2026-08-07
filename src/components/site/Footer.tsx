@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone } from "lucide-react";
+import { CallLink } from "./CallLink";
 import { business, footerNav, legalNav, serviceNav } from "@/lib/site-data";
 import logoUrl from "@/assets/excalibur-radon-logo.webp";
 
@@ -82,9 +83,9 @@ export function Footer() {
           <ul className="mt-4 space-y-3 text-sm text-navy-foreground/75">
             <li className="flex items-start gap-2.5">
               <Phone className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-              <a href={business.phoneHref} className="font-bold text-navy-foreground">
+              <CallLink location="footer" className="font-bold text-navy-foreground">
                 {business.phoneDisplay}
-              </a>
+              </CallLink>
             </li>
             <li className="flex items-start gap-2.5">
               <Mail className="mt-0.5 size-4 shrink-0" aria-hidden="true" />

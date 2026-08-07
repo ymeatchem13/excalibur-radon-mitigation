@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 import { business } from "@/lib/site-data";
 import { Reveal } from "./Reveal";
+import { CallLink } from "./CallLink";
 
 // Roebling Bridge over the Ohio River, the shared banner behind every inner-page
 // hero. Cropped to a wide strip server-side (h=600) because object-cover would
@@ -173,12 +174,12 @@ export function CtaBand({
               >
                 Get Free Estimate
               </Link>
-              <a
-                href={business.phoneHref}
+              <CallLink
+                location="page_hero"
                 className="rounded-xl border border-navy-foreground/25 px-6 py-3.5 text-sm font-bold text-navy-foreground transition-colors hover:bg-navy-foreground/10"
               >
                 Call {business.phoneDisplay}
-              </a>
+              </CallLink>
             </div>
           </div>
         </Reveal>

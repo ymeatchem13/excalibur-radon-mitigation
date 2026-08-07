@@ -3,6 +3,7 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { PageHero } from "@/components/site/PageHero";
 import { QuoteForm } from "@/components/site/QuoteForm";
 import { Reveal } from "@/components/site/Reveal";
+import { CallLink } from "@/components/site/CallLink";
 import { ServiceAreaMap } from "@/components/site/ServiceAreaMap";
 import { business } from "@/lib/site-data";
 import { canonical, ldScript, pageGraph, pageMeta } from "@/lib/seo";
@@ -60,9 +61,9 @@ function Page() {
                 </span>
                 <div>
                   <p className="text-sm font-bold text-navy">Phone</p>
-                  <a href={business.phoneHref} className="text-lg font-extrabold text-brand">
+                  <CallLink location="contact" className="text-lg font-extrabold text-brand">
                     {business.phoneDisplay}
-                  </a>
+                  </CallLink>
                 </div>
               </li>
               <li className="flex items-start gap-4">

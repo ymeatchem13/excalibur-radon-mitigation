@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import { z } from "zod";
 import { CheckCircle2 } from "lucide-react";
 import { business } from "@/lib/site-data";
+import { trackEvent } from "@/lib/analytics";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Please enter your name").max(80),
@@ -45,6 +46,13 @@ export function QuoteForm({ compact = false }: { compact?: boolean }) {
       const next: Record<string, string> = {};
       for (const issue of result.error.issues) next[String(issue.path[0])] = issue.message;
       setErrors(next);
+      /* Field *names*, never field values - "email" is a label, the address the
+         visitor typed would be PII. Which field blocks people most often is the
+         one thing that makes this event worth firing. */
+      trackEvent("form_error", {
+        error_type: "validation",
+        error_field: String(result.error.issues[0]?.path[0] ?? "unknown"),
+      });
       return;
     }
     setErrors({});
@@ -66,10 +74,25 @@ export function QuoteForm({ compact = false }: { compact?: boolean }) {
       });
       if (!res.ok) throw new Error(String(res.status));
       setSent(true);
+      /* The conversion. This form posts by fetch with preventDefault, so there
+         is no thank-you URL for a destination-based goal to match - an explicit
+         event here is the only way GA4 can ever see a lead.
+
+         `service` and `city` come from the validated payload rather than the
+         raw FormData so the values are trimmed and length-capped. Deliberately
+         absent: name, email, phone, message. GA4 forbids PII in parameters. */
+      trackEvent("generate_lead", {
+        service: result.data.service,
+        city: result.data.city,
+        form_location: compact ? "compact" : "full",
+      });
     } catch {
       setErrors({
         form: `That didn't send. Please call ${business.phoneDisplay} or try again.`,
       });
+      /* Separates "nobody filled the form in" from "the form is broken" - the
+         two look identical in a conversion count that only tracks successes. */
+      trackEvent("form_error", { error_type: "network" });
     } finally {
       setSubmitting(false);
     }
