@@ -5,7 +5,7 @@ import { ROUTES } from "./routes";
 // Open Graph, canonical links, JSON-LD, and the sitemap all require. Relative
 // URLs are silently ignored by social scrapers and rejected by Google's sitemap
 // parser. Must match the host actually served (non-www here).
-export const SITE_URL = "https://excaliburradonmitigation.netlify.app";
+export const SITE_URL = "https://excaliburradon.com";
 
 type Business = {
   name: string;

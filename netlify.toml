@@ -10,6 +10,9 @@
 # config, so static files in dist/ win and everything else falls through to SSR.
 # The preset also regenerates dist/_headers (asset cache-control) on every build,
 # so don't hand-write it; it would be overwritten.
+#
+# Redirects therefore belong in THIS file, in the [[redirects]] block at the
+# bottom - it is the one routing surface the preset does not regenerate.
 
 [build]
   # `npm ci` is explicit rather than left to Netlify's auto-detection: bun.lock is
@@ -22,3 +25,16 @@
   # Matches the local toolchain (v24.14.0). Without this Netlify picks its own
   # default, and the build would run on a runtime nothing was verified against.
   NODE_VERSION = "24"
+
+# The site is excaliburradon.com. The .netlify.app host it was built on stays
+# reachable after a custom domain is attached and serves a byte-identical copy,
+# which is duplicate content on two hosts - so send it to the real domain.
+#
+# `from` is a full URL, not a path: that is how Netlify scopes a rule to one
+# host. `force` is required because the subdomain resolves to real content, and
+# an unforced rule loses to content that exists.
+[[redirects]]
+  from = "https://excaliburradonmitigation.netlify.app/*"
+  to = "https://excaliburradon.com/:splat"
+  status = 301
+  force = true

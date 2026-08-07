@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://excaliburradonmitigation.netlify.app/sitemap.xml
+Sitemap: https://excaliburradon.com/sitemap.xml
