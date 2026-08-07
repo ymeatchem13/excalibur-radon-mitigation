@@ -19,6 +19,8 @@ import { SITE_URL } from "@/lib/site-data";
 
 const OG_IMAGE = `${SITE_URL}/og-image.png`;
 
+const GA_MEASUREMENT_ID = "G-PDTHQ1WPQE";
+
 function NotFoundComponent() {
   return (
     <div className="flex min-h-[60vh] items-center justify-center bg-background px-4">
@@ -114,9 +116,34 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
       { rel: "manifest", href: "/site.webmanifest" },
     ],
-    // Site-level entities, defined exactly once for the whole site. Page routes
-    // reference these by @id instead of restating the business.
-    scripts: [ldScript(siteGraph)],
+    scripts: [
+      // Site-level entities, defined exactly once for the whole site. Page routes
+      // reference these by @id instead of restating the business.
+      ldScript(siteGraph),
+      // Ahrefs Web Analytics. Cookieless, so it needs no consent gate; the
+      // privacy policy's "privacy-respecting analytics" line already covers it.
+      // Lives on the root route so it loads once on every page - there is no
+      // index.html in a TanStack Start app, and HeadContent is the only head.
+      // Not gated to production: Ahrefs only records hits for the verified
+      // domain, so localhost traffic never reaches the reports.
+      {
+        src: "https://analytics.ahrefs.com/analytics.js",
+        "data-key": "ssP/eVDlMRL7ygmVyTFYYg",
+        async: true,
+      },
+      // Google Analytics 4 (gtag.js). Same reasoning as Ahrefs above: the root
+      // route is the only place a script can load once for every page.
+      {
+        src: `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`,
+        async: true,
+      },
+      {
+        children: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_MEASUREMENT_ID}');`,
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,
