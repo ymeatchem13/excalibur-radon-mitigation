@@ -20,7 +20,7 @@ import { ROUTES } from "@/lib/routes";
 // city and the service words; that splits the first phrase and loses it.
 const title = "Excalibur Radon Mitigation | Cincinnati, OH";
 const description =
-  "Protect your Cincinnati-area home from elevated radon levels with professional radon mitigation solutions from Excalibur Radon Mitigation. Request an estimate today.";
+  "Radon mitigation systems and EPA-protocol radon testing for Greater Cincinnati and Northern Kentucky homes. Certified installs, verified results, free quotes.";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -47,7 +47,7 @@ function Index() {
       <section className="relative overflow-hidden bg-navy text-navy-foreground">
         <img
           src={heroHome}
-          alt=""
+          alt="Two-story suburban home lit at dusk, typical of the Cincinnati-area homes Excalibur fits with radon mitigation systems"
           width={2000}
           height={1364}
           fetchPriority="high"

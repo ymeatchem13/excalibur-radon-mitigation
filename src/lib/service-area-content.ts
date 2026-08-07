@@ -29,6 +29,14 @@ import { ROUTES } from "./routes";
 export type ServiceAreaContent = {
   /** Opens the page. Sets up why this community is its own conversation. */
   intro: string;
+  /**
+   * Meta description only - never rendered on the page. Exists because `intro`
+   * doubles as the visible hero subhead, and prose that reads well under an h1
+   * runs far past Google's ~160-char snippet limit. Keep each one 140-158 chars
+   * and unique per city: thirteen near-identical descriptions is the duplicate-meta
+   * problem rule 1 above already forbids for body copy.
+   */
+  metaDescription: string;
   /** The built environment: era, foundations, lot conditions. */
   housingStock: string;
   /** How the diagnostics and design actually differ here. */
@@ -46,6 +54,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "cincinnati-oh": {
     intro:
       "The city's housing stock spans more than a century, and that range is the whole challenge. A 1920s foursquare in Hyde Park and a 1990s infill build a mile away need different diagnostics before anyone picks a suction point.",
+    metaDescription:
+      "Radon mitigation systems and EPA-protocol testing for Cincinnati, OH homes, from 1920s foursquares to new infill builds. Free quote, verified retest.",
     housingStock:
       "Block and stone foundations dominate the older neighborhoods, usually with open sump pits, unsealed utility chases, and additions poured against an existing wall decades after the original build. Those additions are the detail most often missed: the joint between old pour and new is rarely sealed, and it frequently turns out to be the dominant entry path once smoke testing starts. Hillside lots on both sides of the basin add a routing constraint on top of all that, because the grade that makes the view also decides where a stack can legally and sensibly terminate.",
     whatWeSee:
@@ -60,6 +70,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "blue-ash-oh": {
     intro:
       "Blue Ash was built out over a narrow span of years, which makes the diagnostics here unusually predictable — and makes the failure mode predictable too.",
+    metaDescription:
+      "Radon mitigation and testing for Blue Ash, OH ranches and split-levels, where one suction point rarely covers the whole slab. Free on-site diagnosis.",
     housingStock:
       "Ranches and split-levels over tight sub-slab fill. Slab footprints are often wider than the basement beneath them, and split-level designs put finished rooms directly on grade at one end of the house, which means part of the living space sits on a pour that was never intended to be occupied space. Fill compacted tightly under those slabs resists the lateral movement a single point depends on.",
     whatWeSee:
@@ -74,6 +86,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "mason-oh": {
     intro:
       "Most Mason homes went up after radon-resistant rough-ins became routine, so a lot of houses here already have most of a system sitting in the walls. It was simply never turned on.",
+    metaDescription:
+      "Radon testing and mitigation system activation in Mason, OH. Many homes here have a builder's passive stack already in the walls, never switched on.",
     housingStock:
       "Newer, tighter construction with large basement footprints and sealed membrane beneath the slab. Passive stacks running from the aggregate layer up through the roofline are common in subdivisions built from the 1990s onward. A passive stack is a genuine head start, but it was installed to a builder's rough-in spec rather than to a measured result, and nobody tested the house afterward to find out whether it worked.",
     whatWeSee:
@@ -88,6 +102,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "west-chester-oh": {
     intro:
       "West Chester puts several foundation types inside a single subdivision, which makes it one of the harder places on our routes to quote without seeing the house.",
+    metaDescription:
+      "Radon mitigation systems and testing for West Chester, OH homes, where basements, crawlspaces, and slabs often sit under one roof. Free written quote.",
     housingStock:
       "Walk-out basements back onto grade changes, and it is common to find a conditioned basement, a crawlspace, and a slab section all under one roof. Each offers soil gas its own way in, and each responds differently to depressurization. Two houses on the same street, built by the same builder in the same year, can require materially different designs because the lot fell away at a different angle.",
     whatWeSee:
@@ -102,6 +118,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "loveland-oh": {
     intro:
       "Loveland reaches into three counties and roughly a century of building, so two houses a mile apart can behave nothing alike.",
+    metaDescription:
+      "Radon testing and mitigation systems for Loveland, OH homes across three counties, where a neighbor's reading tells you little. Diagnostics before design.",
     housingStock:
       "Older homes sit near the Little Miami valley floor while newer subdivisions climb the ground above it. Valley lots bring their own drainage and moisture conditions into the design, and a sump that runs regularly changes both the entry path and the sealing approach. Higher ground behaves more like the newer suburbs to the north, with membrane under the slab and a rough-in already in place.",
     whatWeSee:
@@ -116,6 +134,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "milford-oh": {
     intro:
       "Finished lower levels are what usually bring us to Milford. A basement nobody used was one kind of risk conversation; a basement someone sleeps in is another.",
+    metaDescription:
+      "Radon mitigation systems and EPA-protocol testing for Milford, OH homes with finished lower levels. Clean installs, contained work area, verified retest.",
     housingStock:
       "Clermont County ground drains well, which also means it carries soil gas well. The older sections around Old Milford behave differently from the newer builds spreading through Miami Township, and a finished lower level in either can hide the exact joints and penetrations we most need to reach. Framing, drywall and flooring installed over a slab do not stop soil gas; they only stop you seeing where it arrives.",
     whatWeSee:
@@ -130,6 +150,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "anderson-township-oh": {
     intro:
       "Anderson is a routing problem before it is a radon problem. The mitigation design is often straightforward; getting the pipe out of the house without ruining the elevation is not.",
+    metaDescription:
+      "Radon mitigation and testing in Anderson Township, OH. Hillside and walk-out homes need the pipe routed with care. We plan the run before quoting.",
     housingStock:
       "Hillside lots and walk-out designs mean the back of the house is frequently its most visible side. An exterior stack that would disappear on a flat lot ends up in full view from the yard, the deck, or the street below. Walk-out levels also put finished rooms at grade on the low side, so the part of the house most exposed to the soil is often the part the family uses most.",
     whatWeSee:
@@ -144,6 +166,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "hamilton-oh": {
     intro:
       "Hamilton's century homes are the reason our trucks carry more sealing material than a typical crew needs.",
+    metaDescription:
+      "Radon mitigation systems and testing for Hamilton, OH century homes. Hollow-block walls need their own treatment, not just sub-slab work. Free quote.",
     housingStock:
       "Stone and block foundations, rubble walls, dirt-floor sections, and additions layered on across generations. Hollow block is the detail that changes everything: the cores form a continuous cavity from footing to sill, which behaves as its own soil-gas pathway entirely independent of the slab. A design that treats only the floor leaves that route wide open.",
     whatWeSee:
@@ -158,6 +182,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "fairfield-oh": {
     intro:
       "In Fairfield, suction point placement decides the result far more than fan size does.",
+    metaDescription:
+      "Radon mitigation systems and testing for Fairfield, OH slab and shallow-basement homes. Suction point placement decides the result more than fan size.",
     housingStock:
       "Slab-on-grade and shallow-basement construction from the 1960s through the 1980s, often with limited headroom below and few interior routing options to choose between. Sub-slab material from that era varies widely — some pours sit on clean aggregate that moves air readily, others on compacted native soil that barely moves at all — and which one you have is not visible until a hole goes in.",
     whatWeSee:
@@ -175,6 +201,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "northern-kentucky": {
     intro:
       "Boone, Kenton, and Campbell counties get the same crews and the same week's scheduling as our Ohio routes. The river has never been a service boundary for us.",
+    metaDescription:
+      "Radon mitigation systems and testing across Boone, Kenton, and Campbell counties, KY. Same crews and same week's scheduling as our Ohio routes.",
     housingStock:
       "The three counties differ enough that it is worth reading the page for your own community. Boone leans heavily toward newer subdivision construction, much of it built with a builder's rough-in already in place. Kenton is dominated by historic urban housing with masonry foundations and shared walls. Campbell runs to older homes built into the hillsides above the river, where access rather than diagnostics tends to be the constraint.",
     whatWeSee:
@@ -189,6 +217,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "florence-ky": {
     intro:
       "Florence has grown quickly enough that a large share of its housing already carries a builder's passive rough-in waiting to be finished.",
+    metaDescription:
+      "Radon testing and mitigation for Florence, KY homes. Many carry a builder's passive rough-in that only needs verifying and activating. Free estimate.",
     housingStock:
       "Newer subdivision slabs with under-slab membrane and either a capped stub in the basement or a full passive stack already run to the roofline. Because these were installed as a code-driven rough-in rather than as a response to a measurement, the quality varies with whoever was on site that week — the pipe is usually where it should be, and the connection at the bottom sometimes is not.",
     whatWeSee:
@@ -203,6 +233,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "fort-thomas-ky": {
     intro:
       "Fort Thomas homes tend to be older, larger, and built into a slope, which usually points the installation inward rather than outward.",
+    metaDescription:
+      "Radon mitigation systems and testing for Fort Thomas, KY homes. Older hillside houses usually allow an interior route, leaving the exterior untouched.",
     housingStock:
       "Early twentieth-century construction along the river bluff, with basements cut into the hillside and street-facing elevations owners have every reason to want left alone. Houses of this age and size frequently have more interior vertical space available than newer homes do — old flues, back stairs, and generous closets — which is exactly what an interior route needs.",
     whatWeSee:
@@ -217,6 +249,8 @@ export const serviceAreaContent: Record<string, ServiceAreaContent> = {
   "covington-ky": {
     intro:
       "Covington's historic buildings and converted multi-family properties need an installation that respects what the building actually is.",
+    metaDescription:
+      "Radon mitigation and testing for Covington, KY historic and multi-family buildings, where shared party walls make the building the real boundary.",
     housingStock:
       "Nineteenth-century masonry, shared party walls, buildings subdivided into units at some point in their life, and basements modified repeatedly across a hundred and fifty years. Party walls are the complication that sets this apart: two addresses can share one foundation and one air path, so the building rather than the unit is the real boundary of the problem.",
     whatWeSee:

@@ -18,7 +18,7 @@ const featuredAreas = serviceAreas
 
 const title = "Radon Services | Testing & Mitigation in Cincinnati";
 const description =
-  "Radon testing and radon mitigation for homes and commercial buildings across Greater Cincinnati and Northern Kentucky, including real estate, new construction, and multi-family work.";
+  "Radon testing and radon mitigation systems for homes, commercial buildings, real estate, and new construction across Cincinnati and Northern Kentucky.";
 
 export const Route = createFileRoute("/services/")({
   head: () => ({

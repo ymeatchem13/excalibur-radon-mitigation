@@ -34,11 +34,21 @@ export const Route = createFileRoute("/service-areas/$city")({
     const place = `${area.name}, ${area.state}`;
     const path = cityPath(params.city);
 
-    // Leads on "radon mitigation system", not "radon mitigation {city}": the
-    // repo's keyword research found the former 2-7x larger in every market
-    // measured, while every suburb-modified term was below the reporting floor.
-    const title = `Radon Mitigation Systems in ${place} | Testing & Installation`;
-    const description = `${content.intro} Radon testing and EPA-protocol mitigation systems for ${place} homes.`;
+    // Leads on "radon mitigation system", not "radon mitigation {city}": DataForSEO
+    // (2026-08-06) puts the system term at 110k/mo US and 8.1k/mo Ohio with commercial
+    // intent, while "radon mitigation {city}" returns no data at all for these markets.
+    // Plural costs nothing - "radon mitigation systems" clusters to the same core keyword.
+    //
+    // No " | Testing & Installation" suffix: it pushed the two longest places to 74 chars,
+    // which Ahrefs flags and Google truncates. The city-modified testing terms it was
+    // buying have no measurable volume (radon testing northern kentucky = 10/mo), so the
+    // suffix cost 25 characters for nothing. Keep this template under 60 characters -
+    // budget is 28 + len(place), and the longest place is 21.
+    const title = `Radon Mitigation Systems in ${place}`;
+    // Deliberately NOT built from content.intro. That field is also the visible hero
+    // subhead below, and prose written to open a page ran these snippets to 180-300
+    // chars. metaDescription is the meta-only twin, held to 140-158.
+    const description = content.metaDescription;
 
     return {
       meta: pageMeta({ title, description, path }),
