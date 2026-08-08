@@ -2,15 +2,21 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 import { business } from "@/lib/site-data";
+import { CdnImage } from "./CdnImage";
 import { Reveal } from "./Reveal";
 import { CallLink } from "./CallLink";
 
 // Roebling Bridge over the Ohio River, the shared banner behind every inner-page
-// hero. Cropped to a wide strip server-side (h=600) because object-cover would
-// throw the extra height away, and served at q=50 since it sits under a heavy
-// scrim: together that's ~263 KB instead of ~608 KB, on 13 pages.
+// hero. Still cropped to a wide strip server-side (h=600) because object-cover
+// would throw the extra height away.
+//
+// This URL is no longer what a visitor fetches - it is the SOURCE the Netlify
+// Image CDN pulls once per variant and then caches at the edge. That is why the
+// quality is 80 rather than the 50 it used to be: the browser-facing bytes are
+// decided by the AVIF re-encode in cdnSrcSet, and handing that encoder an
+// already-crushed q=50 JPEG only compounds the artifacts for no saving.
 export const pageHeroBanner =
-  "https://images.unsplash.com/photo-1600186203774-769f73209d00?auto=format&fit=crop&w=1920&h=600&q=50";
+  "https://images.unsplash.com/photo-1600186203774-769f73209d00?auto=format&fit=crop&w=1920&h=600&q=80";
 
 export function PageHero({
   eyebrow,
@@ -33,12 +39,18 @@ export function PageHero({
     <section className="relative overflow-hidden bg-navy text-navy-foreground">
       {image ? (
         <>
-          <img
+          {/* LCP element on all 13 inner pages. Routing it through the Netlify
+              Image CDN does two jobs at once: it cuts the banner to the width
+              the device actually needs as AVIF, and - because /.netlify/images
+              is same-origin - it takes the DNS + TLS handshake to
+              images.unsplash.com off the critical path entirely. Remote sources
+              must be allowlisted in netlify.toml [images] remote_images. */}
+          <CdnImage
             src={image}
             alt=""
             width={1920}
             height={600}
-            fetchPriority="high"
+            priority
             className="absolute inset-0 size-full object-cover"
           />
           {/* Directional, not flat: the hero copy is left-aligned, so keep the left
@@ -122,10 +134,16 @@ export function SectionHeading({
 
 // A finished residential basement - the room a radon system actually goes in,
 // behind the closing CTA on every page. Pre-cropped to h=600 because the band
-// renders roughly 1216x230 and object-cover would throw the rest away; q=55
-// because it sits under an 85% navy scrim. That lands it at ~62 KB.
+// renders roughly 1216x230 and object-cover would throw the rest away.
+//
+// Like pageHeroBanner above, this is a CDN source rather than a browser-facing
+// URL, so it is served at q=80 and the delivered size is set by CDN_BAND_WIDTHS.
 export const ctaBandImage =
-  "https://images.unsplash.com/photo-1646592474273-86049d4f3575?auto=format&fit=crop&w=1400&h=600&q=55";
+  "https://images.unsplash.com/photo-1646592474273-86049d4f3575?auto=format&fit=crop&w=1400&h=600&q=80";
+
+// The band never renders wider than the ~1216px container, so it needs no 1920
+// step - the extra variant would only fragment the edge cache.
+const BAND_WIDTHS = [640, 960, 1280] as const;
 
 export function CtaBand({
   title = "Schedule Your Free Radon Estimate",
@@ -143,12 +161,12 @@ export function CtaBand({
         <Reveal className="relative overflow-hidden rounded-3xl bg-navy px-6 py-14 text-center text-navy-foreground shadow-lift md:px-16">
           {image ? (
             <>
-              <img
+              <CdnImage
                 src={image}
                 alt=""
                 width={1400}
                 height={600}
-                loading="lazy"
+                widths={BAND_WIDTHS}
                 className="absolute inset-0 size-full object-cover"
               />
               {/* Flat rather than directional: the copy is centered, so it needs even

@@ -13,6 +13,8 @@ import { CallLink } from "@/components/site/CallLink";
 import { serviceIcons } from "@/components/site/service-icons";
 import { business, faqs, services, stats, steps, trustBadges, whyUs } from "@/lib/site-data";
 import { canonical, ldScript, pageGraph, pageMeta } from "@/lib/seo";
+import { cdnHeroPreload } from "@/lib/images";
+import { CdnImage } from "@/components/site/CdnImage";
 import { ROUTES } from "@/lib/routes";
 
 // "Cincinnati Radon Mitigation Systems" nests both target phrases as contiguous
@@ -28,7 +30,10 @@ export const Route = createFileRoute("/")({
     meta: pageMeta({ title, description, path: "/" }),
     links: [
       ...canonical("/"),
-      { rel: "preload", as: "image", href: heroHome, fetchPriority: "high" },
+      // Preloads the AVIF srcSet, NOT a single href - the hero below is a
+      // <picture>, so a plain href preload would warm a file the browser then
+      // declines to use and pay for the hero twice.
+      ...cdnHeroPreload(heroHome),
     ],
     // No FAQPage schema here on purpose. /faqs is the single FAQPage for the
     // site; emitting a second node with the same six questions makes the two
@@ -46,12 +51,15 @@ function Index() {
   return (
     <>
       <section className="relative overflow-hidden bg-navy text-navy-foreground">
-        <img
+        {/* The LCP element, and the single biggest lever on the mobile score:
+            the source is a 2000px 445 KB JPEG that a 390px phone was downloading
+            in full. `priority` pairs with the preload in head() above. */}
+        <CdnImage
           src={heroHome}
           alt="Two-story suburban home lit at dusk, typical of the Cincinnati-area homes Excalibur fits with radon mitigation systems"
           width={2000}
           height={1364}
-          fetchPriority="high"
+          priority
           className="absolute inset-0 size-full object-cover object-[55%_45%]"
         />
         <div
@@ -156,12 +164,16 @@ function Index() {
       <section className="section-y">
         <div className="container-page grid items-center gap-12 lg:grid-cols-2">
           <Reveal>
-            <img
+            {/* Half a 1216px grid at lg and up, full-bleed below it - so the
+                srcSet stops at 1280 and `sizes` tells the browser about the
+                column before layout exists. */}
+            <CdnImage
               src={radonDiagram}
               alt="Cutaway illustration of radon soil gas entering a home through basement slab cracks and being vented outside by a mitigation pipe"
               width={1408}
               height={1008}
-              loading="lazy"
+              widths={[640, 960, 1280]}
+              sizes="(min-width: 1024px) 592px, 100vw"
               className="w-full rounded-3xl object-cover shadow-lift"
             />
           </Reveal>

@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { CheckCircle2 } from "lucide-react";
+import { CdnImage } from "./CdnImage";
 import { CtaBand, PageHero } from "./PageHero";
 import { Reveal } from "./Reveal";
 import { QuoteForm } from "./QuoteForm";
@@ -71,12 +72,13 @@ export function ServicePageLayout({
         <div className="container-page grid gap-12 lg:grid-cols-[1.4fr_1fr]">
           <div>
             <Reveal>
-              <img
+              <CdnImage
                 src={image}
                 alt={imageAlt}
-                loading="lazy"
                 width={1200}
                 height={800}
+                widths={[640, 960, 1280]}
+                sizes="(min-width: 1024px) 700px, 100vw"
                 className="aspect-3/2 w-full rounded-3xl object-cover shadow-lift"
               />
             </Reveal>

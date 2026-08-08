@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { CdnImage } from "@/components/site/CdnImage";
 import { CtaBand, PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 import { blogPosts } from "@/lib/site-data";
@@ -48,12 +49,16 @@ function Page() {
           {blogPosts.map((post, i) => (
             <Reveal key={post.slug} delay={(i % 3) * 0.06} className="h-full">
               <article className="flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-card shadow-soft transition-all hover:-translate-y-1 hover:shadow-lift">
-                <img
+                {/* Card thumbnails in a multi-column grid - they never render
+                    anywhere near 1200px, so the steps stop at 960. */}
+                <CdnImage
                   src={post.image}
                   alt={post.title}
-                  loading="lazy"
                   width={1200}
                   height={800}
+                  widths={[400, 640, 960]}
+                  sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
+                  fallbackWidth={640}
                   className="aspect-3/2 w-full object-cover"
                 />
                 <div className="flex flex-1 flex-col p-6">
