@@ -131,9 +131,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // need that face - starting them here overlaps the font fetch with the
       // stylesheet instead of queueing behind it.
       //
-      // Only the two latin subsets are preloaded. The latin-ext files are left
-      // to unicode-range to request on demand: preloading a face the page has no
-      // codepoints for is a download nothing ever uses.
+      // These two files are the whole font payload - there are no latin-ext
+      // faces any more, and both are subset to the glyphs the site can render.
+      //
+      // The hrefs must track the revision suffix in styles.css (-v21). A stale
+      // suffix here does not fail loudly: the browser preloads a file nothing
+      // requests, then fetches the real one separately, so the page merely gets
+      // slower. Change both together.
       //
       // crossOrigin is required on font preloads EVEN SAME-ORIGIN. Fonts are
       // always fetched in CORS mode, so a preload without it is treated as a
@@ -142,14 +146,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "preload",
         as: "font",
         type: "font/woff2",
-        href: "/fonts/inter-latin-v20.woff2",
+        href: "/fonts/inter-latin-v21.woff2",
         crossOrigin: "anonymous",
       },
       {
         rel: "preload",
         as: "font",
         type: "font/woff2",
-        href: "/fonts/manrope-latin-v20.woff2",
+        href: "/fonts/manrope-latin-v21.woff2",
         crossOrigin: "anonymous",
       },
       // Analytics is the only third-party origin left on the critical path, and
