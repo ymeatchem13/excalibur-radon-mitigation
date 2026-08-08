@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { CdnImage } from "@/components/site/CdnImage";
 import { CtaBand, pageHeroBanner } from "@/components/site/PageHero";
+import { SCRIM_QUALITY } from "@/lib/images";
 import { blogPosts } from "@/lib/site-data";
 import { canonical, ldScript, pageGraph, pageMeta } from "@/lib/seo";
 import { ROUTES } from "@/lib/routes";
@@ -67,7 +68,9 @@ function Page() {
   const keepReading =
     index === -1
       ? []
-      : [1, 2].map((offset) => blogPosts[(index + offset) % blogPosts.length]!).filter((p) => p.slug !== post.slug);
+      : [1, 2]
+          .map((offset) => blogPosts[(index + offset) % blogPosts.length]!)
+          .filter((p) => p.slug !== post.slug);
 
   return (
     <>
@@ -78,6 +81,7 @@ function Page() {
             alt=""
             width={1920}
             height={600}
+            quality={SCRIM_QUALITY}
             priority
             className="absolute inset-0 size-full object-cover"
           />
@@ -86,7 +90,10 @@ function Page() {
             className="pointer-events-none absolute inset-0 bg-linear-to-r from-navy/90 via-navy/80 to-navy/60"
           />
           <div className="container-page relative py-16 md:py-20">
-            <nav aria-label="Breadcrumb" className="mb-6 text-xs font-semibold text-navy-foreground/60">
+            <nav
+              aria-label="Breadcrumb"
+              className="mb-6 text-xs font-semibold text-navy-foreground/60"
+            >
               <Link to="/" className="hover:text-navy-foreground">
                 Home
               </Link>

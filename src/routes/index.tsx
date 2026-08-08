@@ -13,7 +13,7 @@ import { CallLink } from "@/components/site/CallLink";
 import { serviceIcons } from "@/components/site/service-icons";
 import { business, faqs, services, stats, steps, trustBadges, whyUs } from "@/lib/site-data";
 import { canonical, ldScript, pageGraph, pageMeta } from "@/lib/seo";
-import { cdnHeroPreload } from "@/lib/images";
+import { cdnHeroPreload, HERO_WIDTHS, SCRIM_QUALITY } from "@/lib/images";
 import { CdnImage } from "@/components/site/CdnImage";
 import { ROUTES } from "@/lib/routes";
 
@@ -32,8 +32,9 @@ export const Route = createFileRoute("/")({
       ...canonical("/"),
       // Preloads the AVIF srcSet, NOT a single href - the hero below is a
       // <picture>, so a plain href preload would warm a file the browser then
-      // declines to use and pay for the hero twice.
-      ...cdnHeroPreload(heroHome),
+      // declines to use and pay for the hero twice. The widths and quality here
+      // must stay identical to the <CdnImage> below for the same reason.
+      ...cdnHeroPreload(heroHome, HERO_WIDTHS, SCRIM_QUALITY),
     ],
     // No FAQPage schema here on purpose. /faqs is the single FAQPage for the
     // site; emitting a second node with the same six questions makes the two
@@ -59,6 +60,7 @@ function Index() {
           alt="Two-story suburban home lit at dusk, typical of the Cincinnati-area homes Excalibur fits with radon mitigation systems"
           width={2000}
           height={1364}
+          quality={SCRIM_QUALITY}
           priority
           className="absolute inset-0 size-full object-cover object-[55%_45%]"
         />
@@ -216,16 +218,20 @@ function Index() {
                 second solid brand button would compete with the Get Free Estimate
                 CTAs for the same attention.
 
-                aria-label because "Learn more" is the seventh identical link text
-                on this page - the six service cards below use it too - and a
-                screen reader listing links gets seven indistinguishable entries
-                without it. The visible label stays "Learn more". */}
+                "Learn more" is the seventh identical link text on this page - the
+                six service cards below use it too. The sr-only span disambiguates
+                it. This used to be an aria-label, which fixed screen readers but
+                NOT Lighthouse's SEO link-text audit: that audit reads innerText,
+                not the accessible name, so seven bare "Learn more" strings still
+                failed it. An sr-only span is clipped rather than display:none, so
+                it stays in innerText and satisfies both. Keep the leading space -
+                it separates the words in the flattened string. */}
             <Link
               to={ROUTES.faqs.path}
-              aria-label="Learn more about radon in the FAQs"
               className="mt-7 inline-flex items-center gap-2 rounded-xl border border-navy/15 bg-secondary px-6 py-3.5 text-sm font-bold text-navy transition-colors hover:bg-accent"
             >
               Learn more
+              <span className="sr-only"> about radon in the FAQs</span>
               <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
           </Reveal>
@@ -335,6 +341,12 @@ function Index() {
                     className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-brand hover:gap-2.5"
                   >
                     Learn more
+                    {/* All six cards render "Learn more", and four of them resolve
+                        to the same /services/radon-mitigation base URL differing
+                        only by hash. The sr-only suffix makes each link's text
+                        unique for both screen readers and Lighthouse's SEO
+                        link-text audit, with no visual change to the card. */}
+                    <span className="sr-only"> about {service.title}</span>
                     <ArrowRight className="size-4" aria-hidden="true" />
                   </Link>
                 </Reveal>
@@ -352,21 +364,29 @@ function Index() {
             title="Five steps from first call to verified result"
             intro="No surprises, no guesswork. Here's exactly what working with our Cincinnati crews looks like."
           />
+          {/* The <li> wrapper is load-bearing, not decoration: Reveal renders a
+              motion.div, so putting it directly under the <ol> left the list with
+              five <div> children and zero <li>s, which screen readers do not
+              announce as a list at all. The grid-item classes live on the <li>
+              because that is now the direct child the grid lays out; Reveal just
+              fills it. */}
           <ol className="mt-14 grid gap-6 md:grid-cols-5">
             {steps.map((step, i) => (
-              <Reveal key={step.title} delay={i * 0.06} className="relative h-full">
-                <div className="flex items-center gap-3 md:block">
-                  <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-navy font-display text-base font-extrabold text-navy-foreground">
-                    {i + 1}
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    className="hidden h-px w-full bg-border md:mt-6 md:block"
-                  />
-                </div>
-                <h3 className="mt-4 text-base font-bold text-navy md:mt-6">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
-              </Reveal>
+              <li key={step.title} className="relative h-full">
+                <Reveal delay={i * 0.06} className="h-full">
+                  <div className="flex items-center gap-3 md:block">
+                    <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-navy font-display text-base font-extrabold text-navy-foreground">
+                      {i + 1}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className="hidden h-px w-full bg-border md:mt-6 md:block"
+                    />
+                  </div>
+                  <h3 className="mt-4 text-base font-bold text-navy md:mt-6">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.body}</p>
+                </Reveal>
+              </li>
             ))}
           </ol>
         </div>
@@ -442,8 +462,8 @@ function Index() {
               Schedule Your Free Radon Estimate
             </h2>
             <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-              Send a few details about your home and we&apos;ll follow up within one business day with
-              pricing, scheduling, and a clear explanation of what your system would look like.
+              Send a few details about your home and we&apos;ll follow up within one business day
+              with pricing, scheduling, and a clear explanation of what your system would look like.
             </p>
             <ul className="mt-8 space-y-3.5">
               {[
@@ -453,7 +473,10 @@ function Index() {
                 "Serving Ohio and Northern Kentucky",
               ].map((point) => (
                 <li key={point} className="flex items-start gap-3 text-sm font-semibold text-navy">
-                  <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-success" aria-hidden="true" />
+                  <CheckCircle2
+                    className="mt-0.5 size-5 shrink-0 text-success"
+                    aria-hidden="true"
+                  />
                   {point}
                 </li>
               ))}

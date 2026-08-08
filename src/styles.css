@@ -15,66 +15,56 @@
  * the woff2 from our own origin collapses that whole chain into one same-origin
  * fetch that the preloads in routes/__root.tsx start immediately.
  *
- * These are the VARIABLE builds (Google Fonts v20), so one file per family
- * covers every weight the design system asks for rather than six static files.
- * The `font-weight` ranges below are the axis bounds of the downloaded subset -
- * asking for a weight outside the range gets a synthesised approximation, so
- * widen the range here (and re-download) before using, say, Inter 700.
+ * These are the VARIABLE builds (Google Fonts v20), subset with pyftsubset to
+ * the glyphs this site can actually render. One file per family covers every
+ * weight the design system asks for, rather than six static files.
  *
- * The latin-ext faces are listed but cost nothing on a normal page: unicode-range
- * means the browser only fetches one if the rendered text actually contains a
- * codepoint from that block.
+ * The `font-weight` values are the font's FULL axis bounds, taken from its fvar
+ * table (Inter 100-900, Manrope 200-800) - not the range we happen to use today.
+ * They must stay that way: a weight requested outside the declared range is
+ * clamped to the nearest end, and this site asks for 700/800 in ~97 places plus
+ * .eyebrow below, so narrowing this silently un-bolds half the design. Google
+ * serves one file spanning the whole axis regardless of the wght range in the
+ * request URL (verified byte-identical across wght@400..600, 400..800 and
+ * 100..900), so the wide range costs nothing.
  *
- * Filenames carry the font version (-v20). netlify.toml serves /fonts/* as
- * immutable for a year, so a future font update MUST land under a new filename
- * or cached clients will never see it.
+ * unicode-range covers ASCII plus the punctuation and symbols a copy edit
+ * realistically introduces (curly quotes, dashes, ellipsis, (c), (R), degree,
+ * middot, euro, tm). The 64 accented Latin-1 letters are deliberately NOT
+ * included - no city or service name in this market needs them, and dropping
+ * them saves ~15 KB across the two files. A character outside this range still
+ * renders: it falls back per-character to the next family in --font-sans
+ * (ui-sans-serif / system-ui), so the failure mode is a slightly mismatched
+ * glyph, never a tofu box. If accented copy ever becomes routine, re-subset
+ * with U+00C0-00FF rather than living with the mismatch.
+ *
+ * There are no latin-ext faces: nothing in this codebase has a codepoint in
+ * that block, so they were 100 KB of files the browser never once requested.
+ *
+ * Filenames carry a revision (-v21). netlify.toml serves /fonts/* as immutable
+ * for a year, so a future font change MUST land under a NEW filename or cached
+ * clients will never see it. Bump the suffix; never overwrite in place.
  */
 @font-face {
   font-family: "Inter";
   font-style: normal;
-  font-weight: 400 600;
+  font-weight: 100 900;
   font-display: swap;
-  src: url("/fonts/inter-latin-v20.woff2") format("woff2");
+  src: url("/fonts/inter-latin-v21.woff2") format("woff2");
   unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
-    U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 400 600;
-  font-display: swap;
-  src: url("/fonts/inter-latin-ext-v20.woff2") format("woff2");
-  unicode-range:
-    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
-    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    U+0020-007E, U+00A0, U+00A9, U+00AE, U+00B0, U+00B7, U+00BD, U+00D7,
+    U+2013, U+2014, U+2018-201D, U+2022, U+2026, U+2039-203A, U+20AC, U+2122;
 }
 
 @font-face {
   font-family: "Manrope";
   font-style: normal;
-  font-weight: 600 800;
+  font-weight: 200 800;
   font-display: swap;
-  src: url("/fonts/manrope-latin-v20.woff2") format("woff2");
+  src: url("/fonts/manrope-latin-v21.woff2") format("woff2");
   unicode-range:
-    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
-    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
-    U+2212, U+2215, U+FEFF, U+FFFD;
-}
-
-@font-face {
-  font-family: "Manrope";
-  font-style: normal;
-  font-weight: 600 800;
-  font-display: swap;
-  src: url("/fonts/manrope-latin-ext-v20.woff2") format("woff2");
-  unicode-range:
-    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
-    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
-    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+    U+0020-007E, U+00A0, U+00A9, U+00AE, U+00B0, U+00B7, U+00BD, U+00D7,
+    U+2013, U+2014, U+2018-201D, U+2022, U+2026, U+2039-203A, U+20AC, U+2122;
 }
 
 /*

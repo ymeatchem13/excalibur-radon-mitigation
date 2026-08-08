@@ -2,21 +2,27 @@ import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { ChevronRight } from "lucide-react";
 import { business } from "@/lib/site-data";
+import pageHeroBannerSrc from "@/assets/page-hero-roebling-bridge.jpg";
+import ctaBandImageSrc from "@/assets/cta-band-basement.jpg";
+import { SCRIM_QUALITY } from "@/lib/images";
 import { CdnImage } from "./CdnImage";
 import { Reveal } from "./Reveal";
 import { CallLink } from "./CallLink";
 
 // Roebling Bridge over the Ohio River, the shared banner behind every inner-page
-// hero. Still cropped to a wide strip server-side (h=600) because object-cover
-// would throw the extra height away.
+// hero. Pre-cropped to 1920x600 because object-cover would throw the extra
+// height away.
 //
-// This URL is no longer what a visitor fetches - it is the SOURCE the Netlify
-// Image CDN pulls once per variant and then caches at the edge. That is why the
-// quality is 80 rather than the 50 it used to be: the browser-facing bytes are
-// decided by the AVIF re-encode in cdnSrcSet, and handing that encoder an
-// already-crushed q=50 JPEG only compounds the artifacts for no saving.
-export const pageHeroBanner =
-  "https://images.unsplash.com/photo-1600186203774-769f73209d00?auto=format&fit=crop&w=1920&h=600&q=80";
+// Self-hosted rather than hotlinked from Unsplash. It used to be a remote URL
+// handed to the Netlify Image CDN, which meant the FIRST request for any variant
+// on any edge node had to fetch the original from images.unsplash.com before it
+// could transcode - and this is the LCP element on 13 pages. That cold path
+// measured 87 against 97 warm. As a local asset it is content-hashed into
+// /assets/ and the CDN transcodes from same-origin storage.
+//
+// This is a CDN *source*, never fetched by a browser, so its own file size does
+// not matter; the delivered bytes come from the AVIF re-encode in CdnImage.
+export const pageHeroBanner = pageHeroBannerSrc;
 
 export function PageHero({
   eyebrow,
@@ -39,17 +45,17 @@ export function PageHero({
     <section className="relative overflow-hidden bg-navy text-navy-foreground">
       {image ? (
         <>
-          {/* LCP element on all 13 inner pages. Routing it through the Netlify
-              Image CDN does two jobs at once: it cuts the banner to the width
-              the device actually needs as AVIF, and - because /.netlify/images
-              is same-origin - it takes the DNS + TLS handshake to
-              images.unsplash.com off the critical path entirely. Remote sources
-              must be allowlisted in netlify.toml [images] remote_images. */}
+          {/* LCP element on all 13 inner pages: cut to the width the device
+              actually needs, as AVIF, and served same-origin. `image` defaults to
+              the self-hosted pageHeroBanner, but the prop is public - a caller
+              passing a remote URL would need it allowlisted in netlify.toml
+              [images] remote_images or the CDN answers 400. */}
           <CdnImage
             src={image}
             alt=""
             width={1920}
             height={600}
+            quality={SCRIM_QUALITY}
             priority
             className="absolute inset-0 size-full object-cover"
           />
@@ -101,7 +107,9 @@ export function PageHero({
           <p className="inline-flex items-center rounded-full bg-brand/20 px-3.5 py-1.5 text-xs font-bold tracking-[0.12em] text-navy-foreground uppercase">
             {eyebrow}
           </p>
-          <h1 className="mt-5 max-w-3xl text-4xl font-extrabold md:text-5xl lg:text-6xl">{title}</h1>
+          <h1 className="mt-5 max-w-3xl text-4xl font-extrabold md:text-5xl lg:text-6xl">
+            {title}
+          </h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-navy-foreground/75 md:text-lg">
             {subtitle}
           </p>
@@ -127,19 +135,21 @@ export function SectionHeading({
     <div className={align === "center" ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}>
       {eyebrow ? <p className="eyebrow">{eyebrow}</p> : null}
       <h2 className="mt-4 text-3xl font-extrabold text-navy md:text-4xl">{title}</h2>
-      {intro ? <p className="mt-4 text-base leading-relaxed text-muted-foreground">{intro}</p> : null}
+      {intro ? (
+        <p className="mt-4 text-base leading-relaxed text-muted-foreground">{intro}</p>
+      ) : null}
     </div>
   );
 }
 
 // A finished residential basement - the room a radon system actually goes in,
-// behind the closing CTA on every page. Pre-cropped to h=600 because the band
+// behind the closing CTA on every page. Pre-cropped to 1400x600 because the band
 // renders roughly 1216x230 and object-cover would throw the rest away.
 //
-// Like pageHeroBanner above, this is a CDN source rather than a browser-facing
-// URL, so it is served at q=80 and the delivered size is set by CDN_BAND_WIDTHS.
-export const ctaBandImage =
-  "https://images.unsplash.com/photo-1646592474273-86049d4f3575?auto=format&fit=crop&w=1400&h=600&q=80";
+// Self-hosted for the same reason as pageHeroBanner above, and likewise only a
+// CDN source: the delivered bytes come from the AVIF re-encode, sized by
+// BAND_WIDTHS.
+export const ctaBandImage = ctaBandImageSrc;
 
 // The band never renders wider than the ~1216px container, so it needs no 1920
 // step - the extra variant would only fragment the edge cache.
@@ -167,6 +177,7 @@ export function CtaBand({
                 width={1400}
                 height={600}
                 widths={BAND_WIDTHS}
+                quality={SCRIM_QUALITY}
                 className="absolute inset-0 size-full object-cover"
               />
               {/* Flat rather than directional: the copy is centered, so it needs even

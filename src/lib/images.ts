@@ -14,11 +14,25 @@ import type { DetailedHTMLProps, LinkHTMLAttributes } from "react";
 //      in netlify.toml under [images] remote_images, or the CDN returns 400.
 
 /**
- * Widths for full-bleed (100vw) hero art. Four steps is enough to keep every
- * common phone/tablet/laptop within ~1.3x of its ideal width; more variants just
- * splits the edge cache and makes first hits likelier to miss.
+ * Widths for full-bleed (100vw) hero art. Enough steps to keep every common
+ * phone/tablet/laptop within ~1.25x of its ideal width, without splitting the
+ * edge cache so far that first hits routinely miss.
+ *
+ * The 800 step exists for one specific case: a 412px-wide phone at DPR 1.75 -
+ * which is exactly what Lighthouse emulates - needs ~721px, and without it the
+ * browser rounds up to 960 and pulls ~40% more bytes than the screen can show.
  */
-export const HERO_WIDTHS = [640, 960, 1280, 1920] as const;
+export const HERO_WIDTHS = [640, 800, 960, 1280, 1920] as const;
+
+/**
+ * Quality for photos sitting under one of the heavy navy scrims (the homepage
+ * hero, the PageHero banner, the CtaBand). The gradient hides the artifacts that
+ * would be obvious on a bare photo, so these can go well below the default.
+ *
+ * Deliberately NOT the module default: radon-diagram.jpg is a line illustration
+ * where AVIF at this quality smears the thin strokes.
+ */
+export const SCRIM_QUALITY = 48;
 
 type Fmt = "avif" | "webp" | "jpg";
 
@@ -68,11 +82,14 @@ export function cdnSrcSet(src: string, widths: readonly number[], fmt: Fmt, q = 
  *
  * The values here have to match the corresponding <source> exactly - a preload
  * that does not match is not a no-op, it is a second full download of the
- * largest image on the page.
+ * largest image on the page. `q` is a parameter for exactly that reason: the
+ * scrimmed heroes render at SCRIM_QUALITY, and a preload left on the default 60
+ * would build a different set of URLs and double-fetch the LCP image.
  */
 export function cdnHeroPreload(
   src: string,
   widths: readonly number[] = HERO_WIDTHS,
+  q = 60,
   // Annotated rather than inferred: without it TS widens fetchPriority to
   // `string`, which no longer satisfies the `"high" | "low" | "auto"` union that
   // a route's head().links expects.
@@ -83,7 +100,7 @@ export function cdnHeroPreload(
       rel: "preload",
       as: "image",
       type: "image/avif",
-      imageSrcSet: cdnSrcSet(src, widths, "avif"),
+      imageSrcSet: cdnSrcSet(src, widths, "avif", q),
       imageSizes: "100vw",
       fetchPriority: "high",
     },
