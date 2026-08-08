@@ -36,6 +36,28 @@
   # the gtag script is present in the deployed HTML after changing this.
   VITE_GA_MEASUREMENT_ID = "G-PDTHQ1WPQE"
 
+# Netlify Image CDN (/.netlify/images), used by src/lib/images.ts to serve the
+# hero art as responsive AVIF. Local assets under /assets/ need no allowlisting;
+# only remote sources do, and an un-allowlisted remote URL fails the request with
+# a 400 rather than falling back - so this pattern must stay in sync with the
+# Unsplash URLs in components/site/PageHero.tsx and lib/site-data.ts.
+#
+# Values are regular expressions, not globs: the dots are escaped so this cannot
+# match a lookalike host such as imagesXunsplashYcom.
+[images]
+  remote_images = ["https://images\\.unsplash\\.com/.*"]
+
+# Self-hosted fonts (see the @font-face block in src/styles.css). The build
+# preset regenerates dist/_headers on every build and would overwrite a
+# hand-written rule there, so this belongs in netlify.toml - Netlify merges the
+# two sources. The filenames are not content-hashed (public/ is copied verbatim),
+# so `immutable` is only safe as long as a font revision lands under a NEW
+# filename. Rename rather than replace in place.
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    cache-control = "public, max-age=31536000, immutable"
+
 # The site is excaliburradon.com. The .netlify.app host it was built on stays
 # reachable after a custom domain is attached and serves a byte-identical copy,
 # which is duplicate content on two hosts - so send it to the real domain.

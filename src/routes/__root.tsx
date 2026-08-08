@@ -125,12 +125,37 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      // Inter and Manrope are self-hosted; the @font-face block lives in
+      // styles.css. These preloads exist because a @font-face URL is only
+      // discovered once the CSS is parsed AND something on the page is found to
+      // need that face - starting them here overlaps the font fetch with the
+      // stylesheet instead of queueing behind it.
+      //
+      // Only the two latin subsets are preloaded. The latin-ext files are left
+      // to unicode-range to request on demand: preloading a face the page has no
+      // codepoints for is a download nothing ever uses.
+      //
+      // crossOrigin is required on font preloads EVEN SAME-ORIGIN. Fonts are
+      // always fetched in CORS mode, so a preload without it is treated as a
+      // different request than the real one and the file is downloaded twice.
       {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700;800&display=swap",
+        rel: "preload",
+        as: "font",
+        type: "font/woff2",
+        href: "/fonts/inter-latin-v20.woff2",
+        crossOrigin: "anonymous",
       },
+      {
+        rel: "preload",
+        as: "font",
+        type: "font/woff2",
+        href: "/fonts/manrope-latin-v20.woff2",
+        crossOrigin: "anonymous",
+      },
+      // Analytics is the only third-party origin left on the critical path, and
+      // gtag.js is the heaviest single script on the page. Warming the
+      // connection lets the handshake run while the document is still parsing.
+      { rel: "preconnect", href: "https://www.googletagmanager.com" },
       // favicon.svg is deliberately NOT linked: it is a 1.5MB wrapper around an
       // embedded raster, and browsers prefer SVG icons when offered.
       { rel: "icon", href: "/favicon.ico", sizes: "32x32" },

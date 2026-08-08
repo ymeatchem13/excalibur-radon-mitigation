@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { CheckCircle2 } from "lucide-react";
 import homeExterior from "@/assets/home-exterior.jpg";
+import { CdnImage } from "@/components/site/CdnImage";
 import { CtaBand, PageHero } from "@/components/site/PageHero";
 import { Reveal } from "@/components/site/Reveal";
 import { canonical, ldScript, pageGraph, pageMeta } from "@/lib/seo";
@@ -42,12 +43,13 @@ function Page() {
       <section className="section-y">
         <div className="container-page grid items-center gap-12 lg:grid-cols-2">
           <Reveal>
-            <img
+            <CdnImage
               src={homeExterior}
               alt="Cincinnati-area home with a professionally installed radon mitigation system"
-              loading="lazy"
               width={1408}
               height={1008}
+              widths={[640, 960, 1280]}
+              sizes="(min-width: 1024px) 592px, 100vw"
               className="w-full rounded-3xl object-cover shadow-lift"
             />
           </Reveal>

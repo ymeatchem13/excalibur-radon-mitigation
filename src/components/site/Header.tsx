@@ -99,7 +99,10 @@ export function Header() {
             alt={`${business.name} home page`}
             width={443}
             height={187}
-            fetchPriority="high"
+            // Deliberately NOT fetchPriority="high". The logo is a 21 KB mark in
+            // the corner; the hero photo underneath it is the LCP element and is
+            // preloaded at high priority. Two "high" images just split the early
+            // bandwidth and push LCP out.
             decoding="async"
             className={cn(
               "w-auto transition-[height] duration-200 ease-out",

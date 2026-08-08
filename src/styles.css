@@ -5,6 +5,79 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
+ * Self-hosted Inter and Manrope, replacing the render-blocking
+ * fonts.googleapis.com stylesheet that used to sit in the head.
+ *
+ * That stylesheet was a serial dependency on the critical path: the browser
+ * could not start fetching a single glyph until it had resolved DNS for
+ * googleapis.com, negotiated TLS, downloaded the CSS, and only then discovered
+ * the gstatic.com URLs inside it - a second origin, a second handshake. Serving
+ * the woff2 from our own origin collapses that whole chain into one same-origin
+ * fetch that the preloads in routes/__root.tsx start immediately.
+ *
+ * These are the VARIABLE builds (Google Fonts v20), so one file per family
+ * covers every weight the design system asks for rather than six static files.
+ * The `font-weight` ranges below are the axis bounds of the downloaded subset -
+ * asking for a weight outside the range gets a synthesised approximation, so
+ * widen the range here (and re-download) before using, say, Inter 700.
+ *
+ * The latin-ext faces are listed but cost nothing on a normal page: unicode-range
+ * means the browser only fetches one if the rendered text actually contains a
+ * codepoint from that block.
+ *
+ * Filenames carry the font version (-v20). netlify.toml serves /fonts/* as
+ * immutable for a year, so a future font update MUST land under a new filename
+ * or cached clients will never see it.
+ */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/inter-latin-v20.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/inter-latin-ext-v20.woff2") format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
+    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url("/fonts/manrope-latin-v20.woff2") format("woff2");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url("/fonts/manrope-latin-ext-v20.woff2") format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB,
+    U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/*
  * Excalibur Radon Mitigation design system.
  * Logo palette: near-black #0A0A0A, crimson #A82830, metallic silver #C0C0C0,
  * body gray #3F3F46, off-white #FAFAFA. All tokens below are OKLCH.

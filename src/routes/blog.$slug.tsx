@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { CdnImage } from "@/components/site/CdnImage";
 import { CtaBand, pageHeroBanner } from "@/components/site/PageHero";
 import { blogPosts } from "@/lib/site-data";
 import { canonical, ldScript, pageGraph, pageMeta } from "@/lib/seo";
@@ -72,12 +73,12 @@ function Page() {
     <>
       <article>
         <header className="relative overflow-hidden bg-navy text-navy-foreground">
-          <img
+          <CdnImage
             src={pageHeroBanner}
             alt=""
             width={1920}
             height={600}
-            fetchPriority="high"
+            priority
             className="absolute inset-0 size-full object-cover"
           />
           <div
@@ -108,12 +109,12 @@ function Page() {
         </header>
 
         <div className="container-page py-14 md:py-20">
-          <img
+          <CdnImage
             src={post.image}
             alt={post.title}
-            loading="lazy"
             width={1200}
             height={800}
+            widths={[640, 960, 1280]}
             className="aspect-16/9 w-full rounded-3xl object-cover shadow-lift"
           />
           <div className="mx-auto mt-12 max-w-3xl">
