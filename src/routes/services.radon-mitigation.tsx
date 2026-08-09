@@ -97,7 +97,7 @@ function Page() {
           heading: "What the finished work looks like",
           paragraphs: [
             "Straight, well-supported pipe runs. Exterior routing chosen with the curb appeal of the house in mind, or interior routing through a chase where that is cleaner. A labeled system with a visible manometer so you can confirm at a glance that the fan is drawing.",
-            "Drop cloths in finished spaces, cores vacuumed as we drill, and the jobsite left the way we found it. Most homes are finished in four to eight hours.",
+            "Drop cloths in finished spaces, cores vacuumed as we drill, and the jobsite left the way we found it. Most homes are finished in three to six hours.",
           ],
         },
       ]}

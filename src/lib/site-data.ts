@@ -459,7 +459,7 @@ export const faqs = [
   },
   {
     q: "How long does installation take?",
-    a: "Most single-family homes are completed in a single visit of four to eight hours. Larger homes, multiple foundation types, or crawlspace encapsulation can extend into a second day. We give you the expected timeline in writing before we start.",
+    a: "Most single-family homes are completed in a single visit of three to six hours. Larger homes, multiple foundation types, or crawlspace encapsulation can extend into a second day. We give you the expected timeline in writing before we start.",
   },
   {
     q: "How much does a radon mitigation system cost?",
@@ -479,7 +479,7 @@ export const stats = [
   { value: "4.0 pCi/L", label: "EPA Action Level", sub: "The EPA recommends fixing homes at or above this reading" },
   { value: "1 in 15", label: "U.S. Homes Affected", sub: "EPA estimate of homes with elevated indoor radon" },
   { value: "ANSI/AARST", label: "Installation Standard", sub: "The national consensus standard we build systems to" },
-  { value: "4-8 hrs", label: "Typical Install Time", sub: "Most residential systems finish in a single visit" },
+  { value: "3-6 hrs", label: "Typical Install Time", sub: "Most residential systems finish in a single visit" },
 ];
 
 /* Every badge here has to be defensible from something else on this site. No
