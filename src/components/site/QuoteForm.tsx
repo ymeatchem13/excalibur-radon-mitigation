@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { CheckCircle2 } from "lucide-react";
 import { business } from "@/lib/site-data";
@@ -26,6 +27,14 @@ const serviceOptions = [
    comment in public/__forms.html for why an SSR app needs it. */
 const FORM_ENDPOINT = "/__forms.html";
 const FORM_NAME = "quote";
+
+/* Stamped into every submission so a carrier audit can be answered with the
+   exact wording the visitor saw, not whatever the form says today. Bump this
+   the moment either consent sentence below changes - existing records have to
+   keep pointing at the text those people actually agreed to. The ".2" is a
+   same-day revision: the first wording named the brand "Excalibur Radon",
+   which is the short name, not the name registered with the carrier. */
+const CONSENT_VERSION = "2026-08-27.2";
 
 export function QuoteForm({ compact = false }: { compact?: boolean }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -66,6 +75,23 @@ export function QuoteForm({ compact = false }: { compact?: boolean }) {
       if (typeof value === "string") params.append(key, value);
     });
 
+    /* Written explicitly rather than left to the loop above. An unchecked box
+       contributes NO FormData entry at all - not "off", not "" - so without
+       this a decline and a field that was never deployed look identical in the
+       Netlify record, and "we cannot prove this person opted in" is the one
+       thing a carrier audit turns on. Both keys are always present. */
+    const smsTransactional = formData.has("sms_transactional_consent");
+    const smsMarketing = formData.has("sms_marketing_consent");
+    params.set("sms_transactional_consent", smsTransactional ? "yes" : "no");
+    params.set("sms_marketing_consent", smsMarketing ? "yes" : "no");
+
+    /* One groupable dimension for GA4. Flags only - the phone number they
+       attach to never leaves this function, per the PII rule in analytics.ts. */
+    const givenConsents = [smsTransactional && "transactional", smsMarketing && "marketing"].filter(
+      Boolean,
+    );
+    const smsConsent = givenConsents.length ? givenConsents.join("+") : "none";
+
     try {
       const res = await fetch(FORM_ENDPOINT, {
         method: "POST",
@@ -85,6 +111,7 @@ export function QuoteForm({ compact = false }: { compact?: boolean }) {
         service: result.data.service,
         city: result.data.city,
         form_location: compact ? "compact" : "full",
+        sms_consent: smsConsent,
       });
     } catch {
       setErrors({
@@ -114,6 +141,10 @@ export function QuoteForm({ compact = false }: { compact?: boolean }) {
   const field =
     "mt-1.5 w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition-shadow placeholder:text-muted-foreground focus:border-brand focus:ring-2 focus:ring-ring/30";
   const labelCls = "block text-sm font-semibold text-navy";
+  const consentBox =
+    "mt-0.5 size-4 shrink-0 accent-brand focus-visible:ring-2 focus-visible:ring-ring/30";
+  const consentText = "text-xs leading-relaxed text-muted-foreground";
+  const consentLink = "font-semibold text-brand hover:underline";
 
   return (
     <form
@@ -127,6 +158,7 @@ export function QuoteForm({ compact = false }: { compact?: boolean }) {
       className="rounded-3xl border border-border bg-card p-6 shadow-soft md:p-8"
     >
       <input type="hidden" name="form-name" value={FORM_NAME} />
+      <input type="hidden" name="consent_version" value={CONSENT_VERSION} />
       {/* Honeypot. `hidden` is display:none, which is what Netlify's own example
           uses. FormData still serializes display:none inputs - only `disabled`
           ones are skipped - so the field reaches Netlify and a bot that fills it
@@ -205,6 +237,62 @@ export function QuoteForm({ compact = false }: { compact?: boolean }) {
           />
         </div>
       </div>
+
+      {/* Two separate opt-ins rather than one blanket box: carriers register
+          transactional and marketing traffic as distinct campaigns, and consent
+          gathered for one does not cover the other.
+
+          Neither is defaultChecked and neither is required. A pre-ticked box is
+          not valid consent, and the marketing sentence itself says consent is
+          not a condition of purchase - requiring it would contradict the words
+          directly above the box.
+
+          Plain inputs, NOT components/ui/checkbox.tsx: that Radix wrapper
+          renders a <button role="checkbox">, which contributes nothing to
+          FormData, and this form reads its values straight off the DOM.
+
+          The wording is verbatim what was registered with the carrier. It is
+          the evidence of what the visitor agreed to, so it must not be
+          paraphrased, shortened, or split differently - change it only
+          alongside CONSENT_VERSION. */}
+      <fieldset className="mt-6 space-y-4 rounded-2xl border border-border bg-surface p-4">
+        <legend className="sr-only">Text message preferences</legend>
+        <label className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            name="sms_transactional_consent"
+            value="yes"
+            className={consentBox}
+          />
+          <span className={consentText}>
+            I consent to receive transactional text messages from {business.name} at the phone
+            number provided, including appointment confirmations, technician arrival updates, test
+            result notifications, and service follow-ups. Message frequency may vary. Message & data
+            rates may apply. Reply HELP for help or STOP to opt out.
+          </span>
+        </label>
+        <label className="flex items-start gap-3">
+          <input type="checkbox" name="sms_marketing_consent" value="yes" className={consentBox} />
+          <span className={consentText}>
+            I consent to receive marketing and promotional text messages from {business.name} at the
+            phone number provided, including annual retest reminders and special offers. Consent is
+            not a condition of purchase. Message frequency may vary. Message & data rates may apply.
+            Reply HELP for help or STOP to opt out.
+          </span>
+        </label>
+        <p className={consentText}>
+          No mobile information will be shared with third parties or affiliates for marketing or
+          promotional purposes. See our{" "}
+          <Link to="/privacy-policy" className={consentLink}>
+            Privacy Policy
+          </Link>{" "}
+          and{" "}
+          <Link to="/terms" className={consentLink}>
+            Terms
+          </Link>
+          .
+        </p>
+      </fieldset>
 
       <button
         type="submit"

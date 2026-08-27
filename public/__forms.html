@@ -27,6 +27,16 @@
       <input type="text" name="city" />
       <input type="text" name="service" />
       <textarea name="message"></textarea>
+      <!--
+        SMS consent. Declared as text, not checkbox: this stub exists only so
+        the deploy-time parser learns the field NAMES, and QuoteForm normalises
+        both boxes to the strings "yes"/"no" before POSTing so a decline is
+        recorded rather than absent. consent_version pins which wording was on
+        screen when they agreed.
+      -->
+      <input type="text" name="sms_transactional_consent" />
+      <input type="text" name="sms_marketing_consent" />
+      <input type="text" name="consent_version" />
     </form>
   </body>
 </html>
