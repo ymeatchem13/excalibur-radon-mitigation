@@ -64,7 +64,7 @@ const sections: { h: string; p: ReactNode }[] = [
      messages" section of the privacy policy. */
   {
     h: "Text messaging program",
-    p: "Excalibur Radon Mitigation operates two separate text messaging programs, and each has its own checkbox on our estimate request form. Transactional messages cover appointment confirmations, technician arrival updates, test result notifications, and service follow-ups. Marketing messages cover annual retest reminders and special offers. Consent to either program is optional, is never a condition of purchase, and is never assumed from a phone number alone. Consent to one program does not carry over to the other.",
+    p: "Excalibur Radon Mitigation operates two separate text messaging programs, and each has its own checkbox on our estimate request form. Transactional messages cover appointment confirmations, technician arrival updates, test result notifications, and service follow-ups. Marketing messages cover special offers, discounts, and service updates such as annual retest reminders. Consent to either program is optional, is never a condition of purchase, and is never assumed from a phone number alone. Consent to one program does not carry over to the other.",
   },
   {
     h: "Opting out, rejoining, and getting help",
@@ -82,7 +82,7 @@ const sections: { h: string; p: ReactNode }[] = [
   },
   {
     h: "Message frequency, rates, and delivery",
-    p: "Message frequency may vary. Message and data rates may apply, and they are set by your mobile carrier rather than by us. Carriers are not liable for delayed or undelivered messages. Supported carriers may change without notice, and delivery is not guaranteed on every network or handset.",
+    p: "Message frequency varies. Message and data rates may apply, and they are set by your mobile carrier rather than by us. Carriers are not liable for delayed or undelivered messages. Supported carriers may change without notice, and delivery is not guaranteed on every network or handset.",
   },
   {
     h: "Eligibility",

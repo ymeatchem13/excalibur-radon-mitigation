@@ -31,10 +31,16 @@ const FORM_NAME = "quote";
 /* Stamped into every submission so a carrier audit can be answered with the
    exact wording the visitor saw, not whatever the form says today. Bump this
    the moment either consent sentence below changes - existing records have to
-   keep pointing at the text those people actually agreed to. The ".2" is a
-   same-day revision: the first wording named the brand "Excalibur Radon",
-   which is the short name, not the name registered with the carrier. */
-const CONSENT_VERSION = "2026-08-27.2";
+   keep pointing at the text those people actually agreed to.
+
+   Same-day revisions, hence the numeric suffixes. ".2" fixed the brand name:
+   the first wording said "Excalibur Radon", the short name, not the name
+   registered with the carrier. ".3" restated both sentences to track the
+   carrier's own published templates - "Message and data rates" spelled out
+   rather than "Message & data rates", "frequency varies" rather than "may
+   vary", and STOP named before HELP. The meaning did not change; the strings
+   a compliance scanner matches on did. */
+const CONSENT_VERSION = "2026-08-27.3";
 
 export function QuoteForm({ compact = false }: { compact?: boolean }) {
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -265,19 +271,19 @@ export function QuoteForm({ compact = false }: { compact?: boolean }) {
             className={consentBox}
           />
           <span className={consentText}>
-            I consent to receive transactional text messages from {business.name} at the phone
-            number provided, including appointment confirmations, technician arrival updates, test
-            result notifications, and service follow-ups. Message frequency may vary. Message & data
-            rates may apply. Reply HELP for help or STOP to opt out.
+            I consent to receive text messages from {business.name} for appointment confirmations,
+            technician arrival updates, test result notifications, and service follow-ups at the
+            phone number provided. Message frequency varies. Message and data rates may apply. Reply
+            STOP to opt out or HELP for assistance.
           </span>
         </label>
         <label className="flex items-start gap-3">
           <input type="checkbox" name="sms_marketing_consent" value="yes" className={consentBox} />
           <span className={consentText}>
-            I consent to receive marketing and promotional text messages from {business.name} at the
-            phone number provided, including annual retest reminders and special offers. Consent is
-            not a condition of purchase. Message frequency may vary. Message & data rates may apply.
-            Reply HELP for help or STOP to opt out.
+            I consent to receive marketing text messages, about special offers, discounts, and
+            service updates, from {business.name} at the phone number provided. Message frequency
+            varies. Message and data rates may apply. Reply STOP to opt out or HELP for assistance.
+            Consent is not a condition of purchase.
           </span>
         </label>
         <p className={consentText}>

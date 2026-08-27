@@ -70,15 +70,15 @@ const sections: { h: string; p: ReactNode }[] = [
         We send text messages only to numbers that have opted in on our estimate request form, and
         the two programs are separate. Transactional messages cover appointment confirmations,
         technician arrival updates, test result notifications, and service follow-ups. Marketing
-        messages cover annual retest reminders and special offers; consent to those is never a
-        condition of purchase. Message frequency may vary and message and data rates may apply.
-        Reply HELP for help or STOP to opt out at any time. No mobile information will be shared
-        with third parties/affiliates for marketing/promotional purposes. Information sharing to
-        subcontractors in support services, such as customer service, is permitted. All other use
-        case categories exclude text messaging originator opt-in data and consent; this information
-        will not be shared with any third parties. Opting out of texts does not affect your estimate
-        or any work we perform. The full messaging terms, including eligibility and carrier
-        disclaimers, are in our{" "}
+        messages cover special offers, discounts, and service updates such as annual retest
+        reminders; consent to those is never a condition of purchase. Message frequency varies.
+        Message and data rates may apply. Reply STOP to opt out or HELP for assistance at any time.
+        No mobile information will be shared with third parties/affiliates for marketing/promotional
+        purposes. Information sharing to subcontractors in support services, such as customer
+        service, is permitted. All other use case categories exclude text messaging originator
+        opt-in data and consent; this information will not be shared with any third parties. Opting
+        out of texts does not affect your estimate or any work we perform. The full messaging terms,
+        including eligibility and carrier disclaimers, are in our{" "}
         <Link to="/terms" className="font-semibold text-brand hover:underline">
           Terms of Service
         </Link>
