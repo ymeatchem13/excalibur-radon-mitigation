@@ -70,12 +70,17 @@ const sections: { h: string; p: ReactNode }[] = [
     h: "Opting out, rejoining, and getting help",
     p: (
       <>
-        You can cancel the SMS service at any time. Reply STOP to any message from us, or text STOP
-        to {business.phoneDisplay}. We will send one final message confirming that you have been
-        unsubscribed, after which you will receive no further texts from that program. To rejoin,
-        text START to the same number or tick the box again on our estimate request form. Reply HELP
-        at any time and we will respond with our business name and a support contact. You can also
-        reach us directly at {business.phoneDisplay} or{" "}
+        {/* The opening sentence is the carrier's own template string, kept
+            word for word so a literal scan of this page finds it here as well
+            as on the opt-in form. The sentences after it are the actual
+            mechanics and say more than the template does - keep both. */}
+        Reply STOP to opt out or HELP for assistance. You can cancel the SMS service at any time by
+        replying STOP to any message from us, or by texting STOP to {business.phoneDisplay}. We will
+        send one final message confirming that you have been unsubscribed, after which you will
+        receive no further texts from that program. To rejoin, text START to the same number or tick
+        the box again on our estimate request form. Reply HELP at any time and we will respond with
+        our business name and a support contact. You can also reach us directly at{" "}
+        {business.phoneDisplay} or{" "}
         <WrittenContact linkClassName="font-semibold text-brand hover:underline" /> to be removed.
       </>
     ),
