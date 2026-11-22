@@ -67,6 +67,12 @@ const orgRef = { "@id": ORG_ID };
  * Plumber, HVACBusiness and RoofingContractor, none of which describe radon
  * work. Do not narrow further.
  *
+ * "Organization" is also listed in @type on purpose. It is redundant per
+ * schema.org (LocalBusiness already inherits from Organization) and harmless
+ * to Google, but Ahrefs' AI Discoverability check only accepts a node whose
+ * @type literally contains "Organization" alongside a non-empty sameAs.
+ * Keep both entries.
+ *
  * CAVEAT, read before editing: the address is asserted here and rendered
  * NOWHERE on the site. Google's structured-data guidelines ask that marked-up
  * content be visible to readers, so this is a deliberate, accepted deviation.
@@ -95,7 +101,7 @@ const orgRef = { "@id": ORG_ID };
  * anywhere on this site, and inventing it is a manual-action risk.
  */
 export const organizationNode = {
-  "@type": "HomeAndConstructionBusiness",
+  "@type": ["Organization", "HomeAndConstructionBusiness"],
   "@id": ORG_ID,
   name: business.name,
   url: SITE_URL,
