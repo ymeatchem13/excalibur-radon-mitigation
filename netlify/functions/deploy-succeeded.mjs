@@ -1,4 +1,4 @@
-// IndexNow auto-submit (Bing, Yandex, Seznam, Naver, ...).
+// IndexNow auto-submit (Bing, Yandex, Seznam, Naver, ...), then the sitemap(s) to Google Search Console.
 //
 // Netlify runs a function named `deploy-succeeded` after every successful deploy
 // (event-triggered function, https://docs.netlify.com/build/functions/trigger-on-events/).
@@ -8,8 +8,14 @@
 // The key must be served at https://HOST/KEY.txt (file: public/643052f712aa175b24db5ea6f16c687a.txt).
 // Nothing here can affect the site: every error is caught and logged, and Netlify
 // ignores the return value of event functions.
+//
+// Search Console: netlify/lib/gscSubmit.mjs, with GSC_CLIENT_EMAIL and GSC_PRIVATE_KEY_B64 (a service account
+// that is an Owner/Full user of the property). Property: GSC_SITE_URL if set, otherwise GSC_SITE.
+
+import { submitToGoogle } from "../lib/gscSubmit.mjs";
 
 const HOST = "excaliburradon.com";
+const GSC_SITE = "sc-domain:excaliburradon.com";
 const KEY = "643052f712aa175b24db5ea6f16c687a";
 
 // Sitemaps to read in addition to https://HOST/sitemap.xml and any `Sitemap:`
@@ -53,12 +59,9 @@ async function sitemapsFromRobots() {
 }
 
 async function collectUrls() {
-  const queue = [
-    `https://${HOST}/sitemap.xml`,
-    ...EXTRA_SITEMAPS,
-    ...(await sitemapsFromRobots()),
-  ];
+  const queue = [`https://${HOST}/sitemap.xml`, ...EXTRA_SITEMAPS, ...(await sitemapsFromRobots())];
   const seen = new Set();
+  const read = []; // sitemaps fetched successfully (submitted to Search Console)
   const urls = new Set();
 
   while (queue.length && seen.size < MAX_SITEMAPS) {
@@ -69,6 +72,7 @@ async function collectUrls() {
       // Strip XML comments first: a comment that mentions <loc> would otherwise
       // swallow the first real URL.
       const xml = (await fetchText(sitemap)).replace(/<!--[\s\S]*?-->/g, "");
+      read.push(sitemap);
       const locs = [...xml.matchAll(/<loc>([\s\S]*?)<\/loc>/gi)].map((m) => unescapeXml(m[1]));
       if (/<sitemapindex[\s>]/i.test(xml)) {
         queue.push(...locs);
@@ -93,7 +97,7 @@ async function collectUrls() {
   }
   if (dropped) log(`dropped ${dropped} URL(s) not on ${HOST}`);
   log(`read ${seen.size} sitemap(s): ${[...seen].join(", ")}`);
-  return kept;
+  return { sitemaps: read, urls: kept };
 }
 
 async function submit(urlList) {
@@ -122,12 +126,17 @@ export default async (req) => {
       log(`skipped: deploy context is "${context}", not production`);
       return new Response("skipped");
     }
-    const urlList = await collectUrls();
+    const { sitemaps, urls: urlList } = await collectUrls();
     if (!urlList.length) {
       log("no URLs found in sitemap(s); nothing submitted");
       return new Response("no urls");
     }
     await submit(urlList);
+    try {
+      await submitToGoogle(sitemaps, { site: process.env.GSC_SITE_URL || GSC_SITE });
+    } catch (err) {
+      console.log("[gsc] error (ignored):", err?.message ?? err);
+    }
   } catch (err) {
     log("error (ignored):", err?.message ?? err);
   }

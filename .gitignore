@@ -20,6 +20,9 @@ dist-ssr
 .wrangler/
 .dev.vars
 
+# Build-time generated data (scripts/generate-lastmod.mjs)
+src/generated/
+
 # Netlify — build output (.netlify/functions-internal) and CLI state
 .netlify/
 
